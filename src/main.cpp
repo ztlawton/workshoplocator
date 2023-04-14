@@ -4,88 +4,34 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include "workshop.h"
 
-enum class eModuleType
+void cWorkshop::move(const cxy &newLocation)
 {
-    artificalG,
-    solar,
-    greenhouse,
-};
-
-enum class eWorkShopType
-{
-    agriculture,
-};
-
-class cxy
-{
-    int x;
-    int y;
-};
-
-class cModule
-{
-public:
-private:
-    cxy myLoc;
-};
-
-class cArificialG : public cModule
-{
-};
-class cSolar : public cModule
-{
-};
-class cGreenHouse : public cModule
-{
-};
-class cWorkshop
-{
-public:
-    cWorkshop(const std::vector<eModuleType> &needs)
-        : myModuleNeeds(needs)
-    {
-    }
-    virtual void move(const cxy &newLocation);
-
-private:
-    cxy myLoc;
-    std::vector<eModuleType> myModuleNeeds;
-};
-
-class cAgriculture : public cWorkshop
-{
-public:
-    cAgriculture()
-        : cWorkshop({eModuleType::artificalG,
-                     eModuleType::solar,
-                     eModuleType::greenhouse})
-    {
-    }
-};
-
-class cLayout
-{
-public:
-    void setWorkshopMix(
-        const std::vector<eWorkShopType> mix);
-
-    void calculateLayout();
-
-private:
-    std::vector<cWorkshop *> myLayout;
-};
-
+    myLoc = newLocation;
+}
 void cLayout::setWorkshopMix(
     const std::vector<eWorkShopType> mix)
 {
-    throw std::runtime_error(
-        "cLayout::setWorkshopMix NYI"    );
+
+    myLayout.clear();
+    for (auto w : mix)
+    {
+        switch (w)
+        {
+        case eWorkShopType::agriculture:
+            myLayout.push_back(new cAgriculture());
+            break;
+        default:
+            throw std::runtime_error(
+                "cLayout::setWorkshopMix unknown workshop type");
+        }
+    }
 }
 void cLayout::calculateLayout()
 {
-     throw std::runtime_error(
-        "cLayout::calculateLayout NYI"    );   
+    throw std::runtime_error(
+        "cLayout::calculateLayout NYI");
 }
 
 main()
