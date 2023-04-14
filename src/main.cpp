@@ -4,31 +4,99 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#include <wex.h>
-#include "cStarterGUI.h"
 
-class cGUI : public cStarterGUI
+enum class eModuleType
+{
+    artificalG,
+    solar,
+    greenhouse,
+};
+
+enum class eWorkShopType
+{
+    agriculture,
+};
+
+class cxy
+{
+    int x;
+    int y;
+};
+
+class cModule
 {
 public:
-    cGUI()
-        : cStarterGUI(
-              "Starter",
-              {50, 50, 1000, 500}),
-          lb(wex::maker::make < wex::label >(fm))
-    {
-        lb.move(50, 50, 100, 30);
-        lb.text("Hello World");
+private:
+    cxy myLoc;
+};
 
-        show();
-        run();
+class cArificialG : public cModule
+{
+};
+class cSolar : public cModule
+{
+};
+class cGreenHouse : public cModule
+{
+};
+class cWorkshop
+{
+public:
+    cWorkshop(const std::vector<eModuleType> &needs)
+        : myModuleNeeds(needs)
+    {
     }
+    virtual void move(const cxy &newLocation);
 
 private:
-    wex::label &lb;
+    cxy myLoc;
+    std::vector<eModuleType> myModuleNeeds;
 };
+
+class cAgriculture : public cWorkshop
+{
+public:
+    cAgriculture()
+        : cWorkshop({eModuleType::artificalG,
+                     eModuleType::solar,
+                     eModuleType::greenhouse})
+    {
+    }
+};
+
+class cLayout
+{
+public:
+    void setWorkshopMix(
+        const std::vector<eWorkShopType> mix);
+
+    void calculateLayout();
+
+private:
+    std::vector<cWorkshop *> myLayout;
+};
+
+void cLayout::setWorkshopMix(
+    const std::vector<eWorkShopType> mix)
+{
+    throw std::runtime_error(
+        "cLayout::setWorkshopMix NYI"    );
+}
+void cLayout::calculateLayout()
+{
+     throw std::runtime_error(
+        "cLayout::calculateLayout NYI"    );   
+}
 
 main()
 {
-    cGUI theGUI;
+    // get required workshop mix
+    const std::vector<eWorkShopType> mix;
+    // ... prompt, read input, convert to vetor of workshop types
+
+    cLayout L;
+    L.setWorkshopMix(mix);
+    L.calculateLayout();
+
     return 0;
 }
