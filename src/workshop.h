@@ -15,6 +15,13 @@ enum class eWorkShopType
 
 class cxy
 {
+    public:
+    cxy()
+    :x( 0 ), y( 0 )
+    {}
+    cxy( int X, int Y )
+        : x( X ), y( Y )
+        {}
     int x;
     int y;
 };
@@ -22,42 +29,62 @@ class cxy
 class cModule
 {
 public:
-private:
+    cModule( eModuleType type )
+    : myType( type )
+    {}
+    void move(const cxy &newLocation);
+    std::string text();
+protected:
+    eModuleType myType;
     cxy myLoc;
 };
 
-class cArificialG : public cModule
+class cArtificialG : public cModule
 {
+    public:
+    cArtificialG()
+    : cModule( eModuleType::artificalG)
+    {}
 };
 class cSolar : public cModule
 {
+    public:
+    cSolar()
+    : cModule( eModuleType::solar)
+    {}
 };
 class cGreenHouse : public cModule
 {
+        public:
+    cGreenHouse()
+    : cModule( eModuleType::greenhouse)
+    {}
 };
 class cWorkshop
 {
 public:
-    cWorkshop(const std::vector<eModuleType> &needs)
-        : myModuleNeeds(needs)
+    cWorkshop(
+        eWorkShopType type,
+        const std::vector<eModuleType> &needs)
+        : myType(type),
+          myModuleNeeds(needs)
     {
     }
-    virtual void move(const cxy &newLocation);
+    void move(const cxy &newLocation);
+    void ConstructModules();
+    std::string text();
 
 private:
+    eWorkShopType myType;
     cxy myLoc;
     std::vector<eModuleType> myModuleNeeds;
+    std::vector<cModule *> myModules;
 };
 
 class cAgriculture : public cWorkshop
 {
 public:
-    cAgriculture()
-        : cWorkshop({eModuleType::artificalG,
-                     eModuleType::solar,
-                     eModuleType::greenhouse})
-    {
-    }
+    cAgriculture();
 };
 
 /// @brief Layout of workshops and modules
@@ -68,8 +95,8 @@ public:
         const std::vector<eWorkShopType> mix);
 
     void calculateLayout();
+    std::string text();
 
 private:
     std::vector<cWorkshop *> myLayout;
 };
-
