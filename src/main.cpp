@@ -6,6 +6,27 @@
 #include <algorithm>
 #include "workshop.h"
 
+cModule::cModule(eModuleType type)
+    : myType(type)
+
+{
+    switch (myType)
+    {
+    case eModuleType::artificalG:
+        myHeat = 6;
+        break;
+    case eModuleType::solar:
+        myHeat = 10;
+        break;
+    case eModuleType::greenhouse:
+        myHeat = 2;
+        break;
+    default:
+        throw std::runtime_error(
+            "cModule unrecognixed type");
+    }
+}
+
 void cModule::move(const cxy &newLocation)
 {
     myLoc = newLocation;
@@ -37,17 +58,17 @@ cWorkshop::cWorkshop(
     : myType(type),
       myModuleNeeds(needs)
 {
-    switch(myType)
-        {
-        case eWorkShopType::agriculture:
-            myBaseTemp = 20;
-            myMinTemp = 20;
-            myMaxTemp = 39;
-            break;
-        default:
-            throw std::runtime_error(
-                "cWorkshop::cWorkshop unrecognized type");
-        }
+    switch (myType)
+    {
+    case eWorkShopType::agriculture:
+        myBaseTemp = 20;
+        myMinTemp = 20;
+        myMaxTemp = 39;
+        break;
+    default:
+        throw std::runtime_error(
+            "cWorkshop::cWorkshop unrecognized type");
+    }
 }
 
 void cWorkshop::move(const cxy &newLocation)
@@ -58,21 +79,7 @@ void cWorkshop::move(const cxy &newLocation)
 void cWorkshop::ConstructModules()
 {
     for (auto m : myModuleNeeds)
-        switch (m)
-        {
-        case eModuleType::solar:
-            myModules.push_back(new cSolar);
-            break;
-        case eModuleType::artificalG:
-            myModules.push_back(new cArtificialG);
-            break;
-        case eModuleType::greenhouse:
-            myModules.push_back(new cGreenHouse);
-            break;
-        default:
-            throw std::runtime_error(
-                "cLayout::calculateLayout unkown module type");
-        }
+        myModules.push_back(new cModule(m));
 
     // locate the modules around the workshop
     std::vector<cxy> around{{1, 0}, {0, 1}, {0, -1}};
@@ -86,32 +93,32 @@ void cWorkshop::ConstructModules()
 
 void cWorkshop::CalcActualTemp()
 {
-    myActualTemp=myBaseTemp;
-    for( auto* m : myModules )
+    myActualTemp = myBaseTemp;
+    for (auto *m : myModules)
     {
-        switch( myLoc.dist( m->location()) )
+        switch (myLoc.dist(m->location()))
         {
-            case 0:
-                throw std::runtime_error(
-                    "cWorkshop::CalcActualTemp bad location"                );
-                break;
-            case 1:
-                myActualTemp += m->heat() - 2;
-                break;
-            case 2:
-                myActualTemp += m->heat() - 4;
-                break;
-            case 3:
-                myActualTemp += m->heat() - 6;
-                break;
-            case 4:
-                myActualTemp += m->heat() - 8;
-                break;
-            case 5:
-                myActualTemp += m->heat() - 10;
-                break;
-            default:
-                break;
+        case 0:
+            throw std::runtime_error(
+                "cWorkshop::CalcActualTemp bad location");
+            break;
+        case 1:
+            myActualTemp += m->heat() - 2;
+            break;
+        case 2:
+            myActualTemp += m->heat() - 4;
+            break;
+        case 3:
+            myActualTemp += m->heat() - 6;
+            break;
+        case 4:
+            myActualTemp += m->heat() - 8;
+            break;
+        case 5:
+            myActualTemp += m->heat() - 10;
+            break;
+        default:
+            break;
         }
     }
 }
@@ -175,9 +182,8 @@ void cLayout::calculateLayout()
         w->ConstructModules();
     }
 
-    for( auto * w : myLayout )
+    for (auto *w : myLayout)
         w->CalcActualTemp();
-
 }
 
 std::string cLayout::text()

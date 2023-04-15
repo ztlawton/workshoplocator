@@ -24,9 +24,9 @@ public:
         : x(X), y(Y)
     {
     }
-    int dist( const cxy& other )
+    int dist(const cxy &other)
     {
-        return abs(x-other.x) + abs(y-other.y);
+        return abs(x - other.x) + abs(y - other.y);
     }
     int x;
     int y;
@@ -35,17 +35,15 @@ public:
 class cModule
 {
 public:
-    cModule(eModuleType type, int heat)
-        : myType(type),
-          myHeat(heat)
-    {
-    }
+    cModule(eModuleType type);
+
     void move(const cxy &newLocation);
     cxy location() const
     {
         return myLoc;
     }
-    int heat() const{
+    int heat() const
+    {
         return myHeat;
     }
     std::string text();
@@ -56,30 +54,6 @@ protected:
     int myHeat;
 };
 
-class cArtificialG : public cModule
-{
-public:
-    cArtificialG()
-        : cModule(eModuleType::artificalG, 6)
-    {
-    }
-};
-class cSolar : public cModule
-{
-public:
-    cSolar()
-        : cModule(eModuleType::solar, 10)
-    {
-    }
-};
-class cGreenHouse : public cModule
-{
-public:
-    cGreenHouse()
-        : cModule(eModuleType::greenhouse, 2)
-    {
-    }
-};
 class cWorkshop
 {
 public:

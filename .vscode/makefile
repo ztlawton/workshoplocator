@@ -20,6 +20,8 @@ static_link_flags = -static-libstdc++ -static-libgcc -static -lComctl32
 # folders
 ODIR = ./.vscode/obj
 
+DEPS = ../src/workshop.h
+
 OPT = -g
 CCflags = -std=c++17 $(OPT) -D_mingw_
 
@@ -29,7 +31,7 @@ OBJ_starter = \
 
 ### COMPILE
 
-$(ODIR)/%.o: %.cpp  
+$(ODIR)/%.o: %.cpp  $(DEPS)
 	g++  $(CCflags) \
 	-c -o $@ $< $(INCS)
 
