@@ -21,9 +21,18 @@ cModule::cModule(eModuleType type)
     case eModuleType::greenhouse:
         myHeat = 2;
         break;
+    case eModuleType::radiator:
+        myHeat = -20;
+        break;
+    case eModuleType::stowage:
+        myHeat = 6;
+        break;
+    case eModuleType::recycling:
+        myHeat = 8;
+        break;
     default:
         throw std::runtime_error(
-            "cModule unrecognixed type");
+            "cModule unrecognised type");
     }
 }
 
@@ -142,7 +151,7 @@ void cWorkshop::CalcActualTemp()
             break;
 
         case eModuleType::radiator:
-
+        {
             // cooling module type
 
             int delta = m->heat();
@@ -151,8 +160,11 @@ void cWorkshop::CalcActualTemp()
             if (delta > 0)
                 delta = 0;
             myActualTemp += delta;
+        }
 
-            break;
+        default:
+            throw std::runtime_error(
+                "cWorkshop::CalcActualTemp unrecognized module type");
         }
     }
 }

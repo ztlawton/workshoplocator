@@ -7,6 +7,8 @@ enum class eModuleType
     solar,
     greenhouse,
     radiator,
+    stowage,
+    recycling,
 };
 
 enum class eWorkShopType
