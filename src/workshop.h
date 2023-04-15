@@ -6,6 +6,7 @@ enum class eModuleType
     artificalG,
     solar,
     greenhouse,
+    radiator,
 };
 
 enum class eWorkShopType
@@ -38,6 +39,11 @@ public:
     cModule(eModuleType type);
 
     void move(const cxy &newLocation);
+
+    eModuleType type() const
+    {
+        return myType;
+    }
     cxy location() const
     {
         return myLoc;

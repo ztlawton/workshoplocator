@@ -63,9 +63,9 @@ cWorkshop::cWorkshop(
         myMinTemp = 20;
         myMaxTemp = 39;
         myModuleNeeds =
-          {eModuleType::artificalG,
-           eModuleType::solar,
-           eModuleType::greenhouse};
+            {eModuleType::artificalG,
+             eModuleType::solar,
+             eModuleType::greenhouse};
         break;
     default:
         throw std::runtime_error(
@@ -95,31 +95,63 @@ void cWorkshop::ConstructModules()
 
 void cWorkshop::CalcActualTemp()
 {
+    // reset to base temp
     myActualTemp = myBaseTemp;
+
+    // calculate heat change from each module, modified by distance
     for (auto *m : myModules)
     {
-        switch (myLoc.dist(m->location()))
+        switch (m->type())
         {
-        case 0:
-            throw std::runtime_error(
-                "cWorkshop::CalcActualTemp bad location");
+        case eModuleType::artificalG:
+        case eModuleType::greenhouse:
+        case eModuleType::solar:
+
+            // heating module type
+            {
+                int delta = 0;
+                switch (myLoc.dist(m->location()))
+                {
+                case 0:
+                    throw std::runtime_error(
+                        "cWorkshop::CalcActualTemp bad location");
+                    break;
+                case 1:
+                    delta = m->heat();
+                    break;
+                case 2:
+                    delta = m->heat() - 2;
+                    break;
+                case 3:
+                    delta = m->heat() - 4;
+                    break;
+                case 4:
+                    delta = m->heat() - 6;
+                    break;
+                case 5:
+                    delta = m->heat() - 8;
+                    break;
+                default:
+                    break;
+                }
+                // disregard heat changes that are negative,
+                if (delta < 0)
+                    delta = 0;
+                myActualTemp += delta;
+            }
             break;
-        case 1:
-            myActualTemp += m->heat() - 2;
-            break;
-        case 2:
-            myActualTemp += m->heat() - 4;
-            break;
-        case 3:
-            myActualTemp += m->heat() - 6;
-            break;
-        case 4:
-            myActualTemp += m->heat() - 8;
-            break;
-        case 5:
-            myActualTemp += m->heat() - 10;
-            break;
-        default:
+
+        case eModuleType::radiator:
+
+            // cooling module type
+
+            int delta = m->heat();
+            delta += 2 * (myLoc.dist(m->location()) - 1);
+            // disregard heat changes that are positive
+            if (delta > 0)
+                delta = 0;
+            myActualTemp += delta;
+
             break;
         }
     }
@@ -149,7 +181,7 @@ void cLayout::setWorkshopMix(
 {
     myLayout.clear();
     for (auto w : mix)
-        myLayout.push_back( new cWorkshop( w ));
+        myLayout.push_back(new cWorkshop(w));
 }
 void cLayout::calculateLayout()
 {
