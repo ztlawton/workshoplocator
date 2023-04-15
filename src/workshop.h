@@ -68,7 +68,11 @@ public:
     cWorkshop(eWorkShopType type);
     void move(const cxy &newLocation);
     void ConstructModules();
-    void CalcActualTemp();
+
+    /// @brief calc temperature from heating/cooling effects of modules
+    /// @return true if temperature within limits
+    bool CalcActualTemp();
+    
     std::string text();
 
 private:

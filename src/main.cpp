@@ -102,7 +102,7 @@ void cWorkshop::ConstructModules()
     }
 }
 
-void cWorkshop::CalcActualTemp()
+bool cWorkshop::CalcActualTemp()
 {
     // reset to base temp
     myActualTemp = myBaseTemp;
@@ -167,6 +167,12 @@ void cWorkshop::CalcActualTemp()
                 "cWorkshop::CalcActualTemp unrecognized module type");
         }
     }
+
+    // check workshop temperature inside limits
+    if( myMinTemp > myActualTemp || myActualTemp > myMaxTemp )
+        return false;
+        
+    return true;
 }
 std::string cWorkshop::text()
 {
@@ -208,8 +214,10 @@ void cLayout::calculateLayout()
         w->ConstructModules();
     }
 
+    // temparature calculation
     for (auto *w : myLayout)
-        w->CalcActualTemp();
+        if( ! w->CalcActualTemp() )
+            std::cout << "WARNING: workshop temparature out of bounds\n";
 }
 
 std::string cLayout::text()
@@ -219,6 +227,7 @@ std::string cLayout::text()
         ss << w->text();
     return ss.str();
 }
+
 
 main()
 {
