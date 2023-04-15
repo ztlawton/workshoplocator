@@ -189,7 +189,7 @@ std::string cWorkshop::text()
     ss << " temp: " << myActualTemp << "\n";
     for (auto *m : myModules)
     {
-        ss << "\t" << m->text() << "\n";
+        ss << "\t" << m->text();
     }
     return ss.str();
 }
@@ -204,7 +204,7 @@ void cLayout::setWorkshopMix(
 void cLayout::calculateLayout()
 {
     std::vector<cxy> initLocs{
-        {10, 10}, {20, 10}};
+        {10, 10}, {20, 10}, {30,10}};
 
     auto itLoc = initLocs.begin();
     /// construct the modules
@@ -223,25 +223,42 @@ void cLayout::calculateLayout()
 std::string cLayout::text()
 {
     std::stringstream ss;
+    ss << "\nLayout\n";
     for (auto *w : myLayout)
         ss << w->text();
     return ss.str();
 }
 
+std::vector<eWorkShopType>
+workshopMixFromUser()
+{
+    std::cout << 
+        "Input Workshop Mix\n"
+        "Enter number of each workshop type in order\n"
+        "Agriculture Biotech Electronics Energy HeavyIndustry\n";
 
+    std::vector<eWorkShopType> ret;
+    int count;
+    for( int k = 0; k < 5; k++ ) {
+        std::cin >> count;
+        for( int w = 0; w < count; w++ )
+            ret.push_back((eWorkShopType)k);
+    }
+    return ret;
+}
 main()
 {
     // get required workshop mix
-    std::vector<eWorkShopType> mix;
+    std::vector<eWorkShopType> mix = workshopMixFromUser();
     // ... prompt, read input, convert to vetor of workshop types
 
-    // test mix
-    std::vector<eWorkShopType> testmix{
-        eWorkShopType::agriculture,
-        eWorkShopType::agriculture};
+    // // test mix
+    // std::vector<eWorkShopType> testmix{
+    //     eWorkShopType::agriculture,
+    //     eWorkShopType::agriculture};
 
     cLayout L;
-    L.setWorkshopMix(testmix);
+    L.setWorkshopMix(mix);
     L.calculateLayout();
     std::cout << L.text();
 
