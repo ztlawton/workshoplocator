@@ -57,8 +57,7 @@ protected:
 class cWorkshop
 {
 public:
-    cWorkshop(eWorkShopType type,
-              const std::vector<eModuleType> &needs);
+    cWorkshop(eWorkShopType type);
     void move(const cxy &newLocation);
     void ConstructModules();
     void CalcActualTemp();
@@ -73,12 +72,6 @@ private:
     int myMinTemp;
     int myMaxTemp;
     int myActualTemp;
-};
-
-class cAgriculture : public cWorkshop
-{
-public:
-    cAgriculture();
 };
 
 /// @brief Layout of workshops and modules

@@ -53,10 +53,8 @@ std::string cModule::text()
     return ss.str();
 }
 cWorkshop::cWorkshop(
-    eWorkShopType type,
-    const std::vector<eModuleType> &needs)
-    : myType(type),
-      myModuleNeeds(needs)
+    eWorkShopType type)
+    : myType(type)
 {
     switch (myType)
     {
@@ -64,6 +62,10 @@ cWorkshop::cWorkshop(
         myBaseTemp = 20;
         myMinTemp = 20;
         myMaxTemp = 39;
+        myModuleNeeds =
+          {eModuleType::artificalG,
+           eModuleType::solar,
+           eModuleType::greenhouse};
         break;
     default:
         throw std::runtime_error(
@@ -142,32 +144,12 @@ std::string cWorkshop::text()
     return ss.str();
 }
 
-cAgriculture::cAgriculture()
-    : cWorkshop(
-          eWorkShopType::agriculture,
-          {eModuleType::artificalG,
-           eModuleType::solar,
-           eModuleType::greenhouse})
-{
-}
 void cLayout::setWorkshopMix(
     const std::vector<eWorkShopType> mix)
 {
-
     myLayout.clear();
     for (auto w : mix)
-    {
-        switch (w)
-        {
-        case eWorkShopType::agriculture:
-            myLayout.push_back(new cAgriculture());
-            break;
-
-        default:
-            throw std::runtime_error(
-                "cLayout::setWorkshopMix unknown workshop type");
-        }
-    }
+        myLayout.push_back( new cWorkshop( w ));
 }
 void cLayout::calculateLayout()
 {
