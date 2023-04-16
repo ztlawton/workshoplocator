@@ -72,6 +72,8 @@ public:
     /// @brief calc temperature from heating/cooling effects of modules
     /// @return true if temperature within limits
     bool CalcActualTemp();
+
+    void addRadiator();
     
     std::string text();
 

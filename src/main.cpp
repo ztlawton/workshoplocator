@@ -102,6 +102,13 @@ void cWorkshop::ConstructModules()
     }
 }
 
+void cWorkshop::addRadiator()
+{
+     myModules.push_back(new cModule(eModuleType::radiator));
+     myModules.back()->move(cxy(myLoc.x-1,myLoc.y));
+     CalcActualTemp();
+}
+
 bool cWorkshop::CalcActualTemp()
 {
     // reset to base temp
@@ -174,6 +181,8 @@ bool cWorkshop::CalcActualTemp()
         
     return true;
 }
+
+
 std::string cWorkshop::text()
 {
     std::stringstream ss;
@@ -203,21 +212,25 @@ void cLayout::setWorkshopMix(
 }
 void cLayout::calculateLayout()
 {
-    std::vector<cxy> initLocs{
-        {10, 10}, {20, 10}, {30,10}};
-
-    auto itLoc = initLocs.begin();
-    /// construct the modules
+    /// locate the workshop and its modules
+    cxy location( 10,10 );
     for (auto *w : myLayout)
     {
-        w->move(*itLoc++);
+        w->move(location);
         w->ConstructModules();
-    }
 
-    // temparature calculation
-    for (auto *w : myLayout)
         if( ! w->CalcActualTemp() )
-            std::cout << "WARNING: workshop temparature out of bounds\n";
+            w->addRadiator();
+
+
+        // increment location for next workshop
+        location.x += 10;
+        if( location.x > 50 )
+            {
+                location.x = 10;
+                location.y += 10;
+            }
+    }
 }
 
 std::string cLayout::text()
