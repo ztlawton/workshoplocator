@@ -104,9 +104,9 @@ void cWorkshop::ConstructModules()
 
 void cWorkshop::addRadiator()
 {
-     myModules.push_back(new cModule(eModuleType::radiator));
-     myModules.back()->move(cxy(myLoc.x-1,myLoc.y));
-     CalcActualTemp();
+    myModules.push_back(new cModule(eModuleType::radiator));
+    myModules.back()->move(cxy(myLoc.x - 1, myLoc.y));
+    CalcActualTemp();
 }
 
 bool cWorkshop::CalcActualTemp()
@@ -176,12 +176,11 @@ bool cWorkshop::CalcActualTemp()
     }
 
     // check workshop temperature inside limits
-    if( myMinTemp > myActualTemp || myActualTemp > myMaxTemp )
+    if (myMinTemp > myActualTemp || myActualTemp > myMaxTemp)
         return false;
-        
+
     return true;
 }
-
 
 std::string cWorkshop::text()
 {
@@ -213,24 +212,36 @@ void cLayout::setWorkshopMix(
 void cLayout::calculateLayout()
 {
     /// locate the workshop and its modules
-    cxy location( 10,10 );
+    cxy location(10, 10);
     for (auto *w : myLayout)
     {
         w->move(location);
         w->ConstructModules();
 
-        if( ! w->CalcActualTemp() )
+        if (!w->CalcActualTemp())
             w->addRadiator();
-
 
         // increment location for next workshop
         location.x += 10;
-        if( location.x > 50 )
-            {
-                location.x = 10;
-                location.y += 10;
-            }
+        if (location.x > 50)
+        {
+            location.x = 10;
+            location.y += 10;
+        }
     }
+    moduleCount();
+}
+
+int cLayout::moduleCount()
+{
+    const int maxModules = 48;
+    int count = 0;
+    for (auto *w : myLayout)
+        count += w->moduleCount();
+    if (count > maxModules)
+        throw std::runtime_error(
+            "cLayout::moduleCount module count exceeded with " + std::to_string(count));
+    return count;
 }
 
 std::string cLayout::text()
@@ -245,16 +256,16 @@ std::string cLayout::text()
 std::vector<eWorkShopType>
 workshopMixFromUser()
 {
-    std::cout << 
-        "Input Workshop Mix\n"
-        "Enter number of each workshop type in order\n"
-        "Agriculture Biotech Electronics Energy HeavyIndustry\n";
+    std::cout << "Input Workshop Mix\n"
+                 "Enter number of each workshop type in order\n"
+                 "Agriculture Biotech Electronics Energy HeavyIndustry\n";
 
     std::vector<eWorkShopType> ret;
     int count;
-    for( int k = 0; k < 5; k++ ) {
+    for (int k = 0; k < 5; k++)
+    {
         std::cin >> count;
-        for( int w = 0; w < count; w++ )
+        for (int w = 0; w < count; w++)
             ret.push_back((eWorkShopType)k);
     }
     return ret;

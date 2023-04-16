@@ -74,7 +74,12 @@ public:
     bool CalcActualTemp();
 
     void addRadiator();
-    
+
+    int moduleCount() const
+    {
+        return myModules.size();
+    }
+
     std::string text();
 
 private:
@@ -100,4 +105,6 @@ public:
 
 private:
     std::vector<cWorkshop *> myLayout;
+
+    int moduleCount();
 };
