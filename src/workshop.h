@@ -14,6 +14,10 @@ enum class eModuleType
 enum class eWorkShopType
 {
     agriculture,
+    biotech,
+    electronics,
+    energy,
+    heavyindustry,
 };
 
 class cxy
