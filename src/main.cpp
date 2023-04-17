@@ -151,6 +151,7 @@ bool cWorkshop::CalcActualTemp()
                 delta = 0;
             myActualTemp += delta;
         }
+        break;
 
         default:
             throw std::runtime_error(
