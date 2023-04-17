@@ -209,28 +209,7 @@ void cLayout::setWorkshopMix(
     for (auto w : mix)
         myLayout.push_back(new cWorkshop(w));
 }
-void cLayout::calculateLayout()
-{
-    /// locate the workshop and its modules
-    cxy location(10, 10);
-    for (auto *w : myLayout)
-    {
-        w->move(location);
-        w->ConstructModules();
 
-        if (!w->CalcActualTemp())
-            w->addRadiator();
-
-        // increment location for next workshop
-        location.x += 10;
-        if (location.x > 50)
-        {
-            location.x = 10;
-            location.y += 10;
-        }
-    }
-    moduleCount();
-}
 
 int cLayout::moduleCount()
 {
@@ -285,6 +264,7 @@ main()
     L.setWorkshopMix(mix);
     L.calculateLayout();
     std::cout << L.text();
+    L.displayAsciiArt();
 
     return 0;
 }

@@ -79,6 +79,11 @@ public:
     {
         return myModules.size();
     }
+    cxy location() const{
+        return myLoc;
+    }
+
+    void asciiArt( std::vector<std::vector<char>>& vgrid );
 
     std::string text();
 
@@ -102,6 +107,7 @@ public:
 
     void calculateLayout();
     std::string text();
+    void displayAsciiArt();
 
 private:
     std::vector<cWorkshop *> myLayout;

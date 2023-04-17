@@ -20,8 +20,9 @@ OPT = -g
 CCflags = -std=c++17 $(OPT) -D_mingw_
 
 # sources
-OBJ_starter = \
-	$(ODIR)/main.o 
+OBJ_workshopLocatorr = \
+	$(ODIR)/main.o \
+	$(ODIR)/cWorkshop.o 
 
 ### COMPILE
 
@@ -29,9 +30,9 @@ $(ODIR)/%.o: %.cpp  $(DEPS)
 	g++  $(CCflags) \
 	-c -o $@ $< $(INCS)
 
-starter: $(OBJ_starter)
+starter: $(OBJ_workshopLocatorr)
 	g++ $(OPT) \
-	-o bin/starter.exe $^  \
+	-o bin/workshopLocator.exe $^  \
 	$(static_link_flags) $(LIBS)
 
 .PHONY: clean
