@@ -16,10 +16,12 @@ jobs:
     - uses: actions/checkout@v3
     - name: make
       run: make -f .vscode/makefile starter
-    - name: Archive production artifacts
+
+    - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
-    - with: |
-         workshoplocator.exe
-         path: bin
+      with:
+        name: executable
+        path: bin/workshoplocator.exe
+
 
 
