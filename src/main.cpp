@@ -72,45 +72,9 @@ cWorkshop::cWorkshop(
         myMinTemp = 20;
         myMaxTemp = 39;
         myModuleNeeds =
-          {eModuleType::artificalG,
-           eModuleType::solar,
-           eModuleType::greenhouse};
-        break;
-    case eWorkShopType::biotech:
-        myBaseTemp = 5;
-        myMinTemp = 30;
-        myMaxTemp = 39;
-        myModuleNeeds =
-          {eModuleType::artificalG,
-           eModuleType::solar,
-           eModuleType::greenhouse};
-        break;
-    case eWorkShopType::electronics:
-        myBaseTemp = 5;
-        myMinTemp = 0;
-        myMaxTemp = 9;
-        myModuleNeeds =
-          {eModuleType::solar,
-           eModuleType::stowage,
-           eModuleType::recycling};
-        break;
-    case eWorkShopType::energy:
-        myBaseTemp = 30;
-        myMinTemp = 20;
-        myMaxTemp = 29;
-        myModuleNeeds =
-          {eModuleType::artificalG,
-           eModuleType::solar,
-           eModuleType::stowage};
-        break;
-    case eWorkShopType::heavyindustry:
-        myBaseTemp = 30;
-        myMinTemp = 20;
-        myMaxTemp = 29;
-        myModuleNeeds =
-          {eModuleType::solar,
-           eModuleType::stowage,
-           eModuleType::recycling};
+            {eModuleType::artificalG,
+             eModuleType::solar,
+             eModuleType::greenhouse};
         break;
     default:
         throw std::runtime_error(
@@ -226,19 +190,7 @@ std::string cWorkshop::text()
     switch (myType)
     {
     case eWorkShopType::agriculture:
-        ss << "Agriculture Chambers (Workshop): ";
-        break;
-    case eWorkShopType::biotech:
-        ss << "Biotech Complex (Workshop): ";
-        break;
-    case eWorkShopType::electronics:
-        ss << "Electronics Cleanroom (Workshop): ";
-        break;
-    case eWorkShopType::energy:
-        ss << "Energy Cluster (Workshop): ";
-        break;
-    case eWorkShopType::heavyindustry:
-        ss << "Heavy Industry Hall (Workshop): ";
+        ss << "Agriculture workshop: ";
         break;
     default:
         ss << "Unkown workshop\n";
