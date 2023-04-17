@@ -62,32 +62,9 @@ std::string cModule::text()
     return ss.str();
 }
 
-
 void cWorkshop::move(const cxy &newLocation)
 {
     myLoc = newLocation;
-}
-
-void cWorkshop::ConstructModules()
-{
-    for (auto m : myModuleNeeds)
-        myModules.push_back(new cModule(m));
-
-    // locate the modules around the workshop
-    std::vector<cxy> around{{1, 0}, {0, 1}, {0, -1}};
-    auto it = around.begin();
-    for (auto *m : myModules)
-    {
-        m->move(cxy(myLoc.x + it->x, myLoc.y + it->y));
-        it++;
-    }
-}
-
-void cWorkshop::addRadiator()
-{
-    myModules.push_back(new cModule(eModuleType::radiator));
-    myModules.back()->move(cxy(myLoc.x - 1, myLoc.y));
-    CalcActualTemp();
 }
 
 bool cWorkshop::CalcActualTemp()
@@ -166,7 +143,71 @@ bool cWorkshop::CalcActualTemp()
     return true;
 }
 
+void cLayout::calculateLayout()
+{
+    const int space = 4;
+    cxy location(2, space);
+    /// locate agricultural workshops so they share greenhouse modules
+    bool first = true;
+    cModule * mg;
+    for (auto *w : myLayout)
+    {
+        if (w->type() != eWorkShopType::agriculture)
+            continue;
 
+        w->move(location);
+        if (first)
+        {
+            mg = new cModule(eModuleType::greenhouse);
+            mg->move(cxy(w->location().x - 1, w->location().y));
+            w->add(mg);
+            mg = new cModule(eModuleType::greenhouse);
+            mg->move(cxy(w->location().x + 1, w->location().y));
+            w->add(mg);
+            first = false;
+        }
+        else
+        {
+            w->add( mg );   // shared greenhouse
+            mg = new cModule(eModuleType::greenhouse);
+            mg->move(cxy(w->location().x + 1, w->location().y));
+            w->add(mg);
+        }
+
+        w->CalcActualTemp();
+
+        location.x += 2;
+        if (location.x > 15)
+        {
+            location.x = 2;
+            location.y += space;
+            first = true;
+        }
+    }
+
+    /// locate the other workshops
+    for (auto *w : myLayout)
+    {
+        // check workshop waiting to be located
+        if (w->location().x > -1)
+            continue;
+
+        w->move(location);
+        w->ConstructModules();
+
+        if (!w->CalcActualTemp())
+            w->addRadiator();
+
+        // increment location for next workshop
+        location.x += space;
+        if (location.x > 15)
+        {
+            location.x = 2;
+            location.y += space;
+        }
+    }
+    moduleCount();
+}
 
 void cLayout::setWorkshopMix(
     const std::vector<eWorkShopType> mix)
@@ -175,7 +216,6 @@ void cLayout::setWorkshopMix(
     for (auto w : mix)
         myLayout.push_back(new cWorkshop(w));
 }
-
 
 int cLayout::moduleCount()
 {

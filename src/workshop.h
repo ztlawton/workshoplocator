@@ -73,6 +73,7 @@ public:
     /// @return true if temperature within limits
     bool CalcActualTemp();
 
+    void add( cModule* m );
     void addRadiator();
 
     int moduleCount() const
@@ -81,6 +82,9 @@ public:
     }
     cxy location() const{
         return myLoc;
+    }
+    eWorkShopType type() const{
+        return myType;
     }
 
     void asciiArt( std::vector<std::vector<char>>& vgrid );
@@ -92,7 +96,7 @@ private:
     cxy myLoc;
     std::vector<eModuleType> myModuleNeeds;
     std::vector<cModule *> myModules;
-    std::vector<int> myPBPmax;
+    std::vector<int> myPBPmax;          // max PBP contribution from each module type
     int myBaseTemp;
     int myMinTemp;
     int myMaxTemp;

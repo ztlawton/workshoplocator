@@ -8,7 +8,7 @@
 
 cWorkshop::cWorkshop(
     eWorkShopType type)
-    : myType(type)
+    : myType(type), myLoc(-1, -1)
 {
     myPBPmax.resize(6);
     switch (myType)
@@ -21,9 +21,9 @@ cWorkshop::cWorkshop(
             {eModuleType::artificalG,
              eModuleType::solar,
              eModuleType::greenhouse};
-        myPBPmax[ (int) eModuleType::artificalG ] = 6;
-        myPBPmax[ (int) eModuleType::solar ] = 3;
-        myPBPmax[ (int) eModuleType::artificalG ] = 12;
+        myPBPmax[(int)eModuleType::artificalG] = 20;
+        myPBPmax[(int)eModuleType::solar] = 10;
+        myPBPmax[(int)eModuleType::greenhouse] = 40;
         break;
     default:
         throw std::runtime_error(
@@ -31,28 +31,31 @@ cWorkshop::cWorkshop(
     }
 }
 
-void cLayout::calculateLayout()
+void cWorkshop::ConstructModules()
 {
-    /// locate the workshop and its modules
-    const int space = 4;
-    cxy location(2, space);
-    for (auto *w : myLayout)
+    for (auto m : myModuleNeeds)
+        myModules.push_back(new cModule(m));
+
+    // locate the modules around the workshop
+    std::vector<cxy> around{{1, 0}, {0, 1}, {0, -1}};
+    auto it = around.begin();
+    for (auto *m : myModules)
     {
-        w->move(location);
-        w->ConstructModules();
-
-        if (!w->CalcActualTemp())
-            w->addRadiator();
-
-        // increment location for next workshop
-        location.x += space;
-        if (location.x > 15)
-        {
-            location.x = 2;
-            location.y += space;
-        }
+        m->move(cxy(myLoc.x + it->x, myLoc.y + it->y));
+        it++;
     }
-    moduleCount();
+}
+
+void cWorkshop::add( cModule* m )
+{
+    myModules.push_back( m );
+}
+
+void cWorkshop::addRadiator()
+{
+    myModules.push_back(new cModule(eModuleType::radiator));
+    myModules.back()->move(cxy(myLoc.x - 1, myLoc.y));
+    CalcActualTemp();
 }
 
 int cWorkshop::productivity()
@@ -73,7 +76,7 @@ int cWorkshop::productivity()
 float cWorkshop::ProductivityBonusPoints()
 {
     const std::vector<float> PBPdist{-1, 16.67, 13.33, 1, 6.67, 3.33};
-    std::vector<float> PBPtype(5);
+    std::vector<float> PBPtype(6);
     float totalPBP = 0;
 
     // PBP from each connected module
@@ -105,7 +108,7 @@ float cWorkshop::ProductivityBonusPoints()
     }
 
     // sum PBPs from all types
-    for( float pbp : PBPtype )
+    for (float pbp : PBPtype)
     {
         totalPBP += pbp;
     }
@@ -136,10 +139,10 @@ std::string cWorkshop::text()
 
 void cWorkshop::asciiArt(std::vector<std::vector<char>> &vgrid)
 {
-    vgrid[myLoc.x][myLoc.y] = 'W';
+    vgrid[myLoc.y][myLoc.x] = 'W';
     for (auto *m : myModules)
     {
-        vgrid[m->location().x][m->location().y] = 'm';
+        vgrid[m->location().y][m->location().x] = 'm';
     }
 }
 
