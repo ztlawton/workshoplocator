@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: make
-      run: make -f .vscode/makefile starter
+      run: mingw32-make -f .vscode/makefile starter
 
     - name: 'Upload Artifact'
       uses: actions/upload-artifact@v3
