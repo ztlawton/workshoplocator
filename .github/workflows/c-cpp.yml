@@ -18,8 +18,8 @@ jobs:
       run: make -f .vscode/makefile starter
     - name: Archive production artifacts
       uses: actions/upload-artifact@v3
-        with:
-          name: workshoplocator.exe
-          path: bin
+    - with: |
+         workshoplocator.exe
+         path: bin
 
 
