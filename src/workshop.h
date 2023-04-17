@@ -92,10 +92,14 @@ private:
     cxy myLoc;
     std::vector<eModuleType> myModuleNeeds;
     std::vector<cModule *> myModules;
+    std::vector<int> myPBPmax;
     int myBaseTemp;
     int myMinTemp;
     int myMaxTemp;
     int myActualTemp;
+
+    int productivity();
+    float ProductivityBonusPoints();
 };
 
 /// @brief Layout of workshops and modules

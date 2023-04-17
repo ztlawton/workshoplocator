@@ -61,26 +61,7 @@ std::string cModule::text()
     ss << "location: " << myLoc.x << " " << myLoc.y << "\n";
     return ss.str();
 }
-cWorkshop::cWorkshop(
-    eWorkShopType type)
-    : myType(type)
-{
-    switch (myType)
-    {
-    case eWorkShopType::agriculture:
-        myBaseTemp = 20;
-        myMinTemp = 20;
-        myMaxTemp = 39;
-        myModuleNeeds =
-            {eModuleType::artificalG,
-             eModuleType::solar,
-             eModuleType::greenhouse};
-        break;
-    default:
-        throw std::runtime_error(
-            "cWorkshop::cWorkshop unrecognized type");
-    }
-}
+
 
 void cWorkshop::move(const cxy &newLocation)
 {
@@ -184,25 +165,7 @@ bool cWorkshop::CalcActualTemp()
     return true;
 }
 
-std::string cWorkshop::text()
-{
-    std::stringstream ss;
-    switch (myType)
-    {
-    case eWorkShopType::agriculture:
-        ss << "Agriculture workshop: ";
-        break;
-    default:
-        ss << "Unkown workshop\n";
-    }
-    ss << "location: " << myLoc.x << " " << myLoc.y;
-    ss << " temp: " << myActualTemp << "\n";
-    for (auto *m : myModules)
-    {
-        ss << "\t" << m->text();
-    }
-    return ss.str();
-}
+
 
 void cLayout::setWorkshopMix(
     const std::vector<eWorkShopType> mix)
