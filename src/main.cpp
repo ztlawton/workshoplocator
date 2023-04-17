@@ -122,6 +122,8 @@ bool cWorkshop::CalcActualTemp()
         case eModuleType::artificalG:
         case eModuleType::greenhouse:
         case eModuleType::solar:
+        case eModuleType::recycling:
+        case eModuleType::stowage:
 
             // heating module type
             {
