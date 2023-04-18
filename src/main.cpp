@@ -168,11 +168,21 @@ void cLayout::calculateLayout()
         }
         else
         {
-            w->add( mg );   // shared greenhouse
+            w->add( mg );   // shared greenhouse with previous workshop
+
             mg = new cModule(eModuleType::greenhouse);
             mg->move(cxy(w->location().x + 1, w->location().y));
             w->add(mg);
         }
+
+            mg = new cModule(eModuleType::solar);
+            mg->move(cxy(w->location().x, w->location().y+1));
+            w->add(mg);
+            mg = new cModule(eModuleType::artificalG);
+            mg->move(cxy(w->location().x, w->location().y-1));
+            w->add(mg);
+
+
 
         w->CalcActualTemp();
 
@@ -180,7 +190,7 @@ void cLayout::calculateLayout()
         if (location.x > 15)
         {
             location.x = 2;
-            location.y += space;
+            location.y += 3;
             first = true;
         }
     }
