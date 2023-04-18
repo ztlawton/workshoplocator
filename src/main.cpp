@@ -12,8 +12,8 @@ cModule::cModule(eModuleType type)
 {
     switch (myType)
     {
-    case eModuleType::artificalG:
-        myHeat = 6;
+    case eModuleType::radiator:
+        myHeat = -20;
         break;
     case eModuleType::solar:
         myHeat = 10;
@@ -21,8 +21,8 @@ cModule::cModule(eModuleType type)
     case eModuleType::greenhouse:
         myHeat = 2;
         break;
-    case eModuleType::radiator:
-        myHeat = -20;
+    case eModuleType::artificialG:
+        myHeat = 6;
         break;
     case eModuleType::stowage:
         myHeat = 6;
@@ -46,17 +46,26 @@ std::string cModule::text()
     std::stringstream ss;
     switch (myType)
     {
-    case eModuleType::solar:
-        ss << "Solar module: ";
+    case eModuleType::radiator:
+        ss << "Radiator (Module): ";
         break;
-    case eModuleType::artificalG:
-        ss << "ArtificialG module: ";
+    case eModuleType::solar:
+        ss << "Solar Cells (Module): ";
         break;
     case eModuleType::greenhouse:
-        ss << "GreenHouse module: ";
+        ss << "Greenhouse (Module): ";
+        break;
+    case eModuleType::artificialG:
+        ss << "Artificial-G Lab (Module): ";
+        break;
+    case eModuleType::stowage:
+        ss << "Stowage Platform (Module): ";
+        break;
+    case eModuleType::recycling:
+        ss << "Recycling System (Module): ";
         break;
     default:
-        ss << "Unkown module ";
+        ss << "Unknown Module ";
     }
     ss << "location: " << myLoc.x << " " << myLoc.y << "\n";
     return ss.str();
@@ -77,11 +86,11 @@ bool cWorkshop::CalcActualTemp()
     {
         switch (m->type())
         {
-        case eModuleType::artificalG:
-        case eModuleType::greenhouse:
         case eModuleType::solar:
-        case eModuleType::recycling:
+        case eModuleType::greenhouse:
+        case eModuleType::artificialG:
         case eModuleType::stowage:
+        case eModuleType::recycling:
 
             // heating module type
             {
@@ -118,17 +127,17 @@ bool cWorkshop::CalcActualTemp()
             break;
 
         case eModuleType::radiator:
-        {
-            // cooling module type
+            {
+                // cooling module type
 
-            int delta = m->heat();
-            delta += 2 * (myLoc.dist(m->location()) - 1);
-            // disregard heat changes that are positive
-            if (delta > 0)
-                delta = 0;
-            myActualTemp += delta;
-        }
-        break;
+                int delta = m->heat();
+                delta += 2 * (myLoc.dist(m->location()) - 1);
+                // disregard heat changes that are positive
+                if (delta > 0)
+                    delta = 0;
+                myActualTemp += delta;
+            }
+            break;
 
         default:
             throw std::runtime_error(
@@ -178,7 +187,7 @@ void cLayout::calculateLayout()
             mg = new cModule(eModuleType::solar);
             mg->move(cxy(w->location().x, w->location().y+1));
             w->add(mg);
-            mg = new cModule(eModuleType::artificalG);
+            mg = new cModule(eModuleType::artificialG);
             mg->move(cxy(w->location().x, w->location().y-1));
             w->add(mg);
 

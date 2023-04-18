@@ -3,10 +3,10 @@
 
 enum class eModuleType
 {
-    artificalG,
+    radiator,
     solar,
     greenhouse,
-    radiator,
+    artificialG,
     stowage,
     recycling,
 };
@@ -14,6 +14,10 @@ enum class eModuleType
 enum class eWorkShopType
 {
     agriculture,
+    biotech,
+    electronics,
+    energy,
+    heavyindustry,
 };
 
 class cxy
