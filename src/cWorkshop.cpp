@@ -94,9 +94,9 @@ void cWorkshop::ConstructModules()
     }
 }
 
-void cWorkshop::add( cModule* m )
+void cWorkshop::add(cModule *m)
 {
-    myModules.push_back( m );
+    myModules.push_back(m);
 }
 
 void cWorkshop::addRadiator()
@@ -197,12 +197,24 @@ std::string cWorkshop::text()
     return ss.str();
 }
 
+void insertAscii(
+    std::vector<std::vector<char>> &vgrid,
+    const cxy &loc,
+    char c)
+{
+    if( 0 > loc.x || loc.x >= 17 ||
+     0 > loc.y || loc.y >= 17) {
+        std::cout << "WARNING: location outside grid\n";
+        return;
+     }
+    vgrid[loc.y][loc.x] = c;
+}
 void cWorkshop::asciiArt(std::vector<std::vector<char>> &vgrid)
 {
-    vgrid[myLoc.y][myLoc.x] = 'W';
+    insertAscii(vgrid, myLoc, 'W');
     for (auto *m : myModules)
     {
-        vgrid[m->location().y][m->location().x] = 'm';
+        insertAscii(vgrid, m->location(), 'm');
     }
 }
 

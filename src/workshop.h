@@ -79,6 +79,7 @@ public:
 
     void add( cModule* m );
     void addRadiator();
+    int productivity();
 
     int moduleCount() const
     {
@@ -106,7 +107,6 @@ private:
     int myMaxTemp;
     int myActualTemp;
 
-    int productivity();
     float ProductivityBonusPoints();
 };
 
