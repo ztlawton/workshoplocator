@@ -18,12 +18,60 @@ cWorkshop::cWorkshop(
         myMinTemp = 20;
         myMaxTemp = 39;
         myModuleNeeds =
-            {eModuleType::artificalG,
+            {eModuleType::artificialG,
              eModuleType::solar,
              eModuleType::greenhouse};
-        myPBPmax[(int)eModuleType::artificalG] = 20;
+        myPBPmax[(int)eModuleType::artificialG] = 20;
         myPBPmax[(int)eModuleType::solar] = 10;
         myPBPmax[(int)eModuleType::greenhouse] = 40;
+        break;
+    case eWorkShopType::biotech:
+        myBaseTemp = 5;
+        myMinTemp = 30;
+        myMaxTemp = 39;
+        myModuleNeeds =
+            {eModuleType::artificialG,
+             eModuleType::solar,
+             eModuleType::greenhouse};
+        myPBPmax[(int)eModuleType::artificialG] = 30;
+        myPBPmax[(int)eModuleType::solar] = 20;
+        myPBPmax[(int)eModuleType::greenhouse] = 20;
+        break;
+    case eWorkShopType::electronics:
+        myBaseTemp = 5;
+        myMinTemp = 0;
+        myMaxTemp = 9;
+        myModuleNeeds =
+            {eModuleType::solar,
+             eModuleType::stowage,
+             eModuleType::recycling};
+        myPBPmax[(int)eModuleType::solar] = 20;
+        myPBPmax[(int)eModuleType::stowage] = 20;
+        myPBPmax[(int)eModuleType::recycling] = 30;
+        break;
+    case eWorkShopType::energy:
+        myBaseTemp = 30;
+        myMinTemp = 20;
+        myMaxTemp = 29;
+        myModuleNeeds =
+            {eModuleType::artificialG,
+             eModuleType::solar,
+             eModuleType::stowage};
+        myPBPmax[(int)eModuleType::artificialG] = 10;
+        myPBPmax[(int)eModuleType::solar] = 50;
+        myPBPmax[(int)eModuleType::stowage] = 10;
+        break;
+    case eWorkShopType::heavyindustry:
+        myBaseTemp = 30;
+        myMinTemp = 20;
+        myMaxTemp = 29;
+        myModuleNeeds =
+            {eModuleType::solar,
+             eModuleType::stowage,
+             eModuleType::recycling};
+        myPBPmax[(int)eModuleType::solar] = 20;
+        myPBPmax[(int)eModuleType::stowage] = 30;
+        myPBPmax[(int)eModuleType::recycling] = 20;
         break;
     default:
         throw std::runtime_error(
@@ -122,10 +170,22 @@ std::string cWorkshop::text()
     switch (myType)
     {
     case eWorkShopType::agriculture:
-        ss << "Agriculture workshop: ";
+        ss << "Agriculture Chambers (Workshop): ";
+        break;
+    case eWorkShopType::biotech:
+        ss << "Biotech Complex (Workshop): ";
+        break;
+    case eWorkShopType::electronics:
+        ss << "Electronics Cleanroom (Workshop): ";
+        break;
+    case eWorkShopType::energy:
+        ss << "Energy Cluster (Workshop): ";
+        break;
+    case eWorkShopType::heavyindustry:
+        ss << "Heavy Industry Hall (Workshop): ";
         break;
     default:
-        ss << "Unkown workshop\n";
+        ss << "Unknown workshop\n";
     }
     ss << "location: " << myLoc.x << " " << myLoc.y;
     ss << " temp: " << myActualTemp;
