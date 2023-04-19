@@ -8,12 +8,14 @@
 
 void cLayout::calculateLayout()
 {
+    cModule::clearModuleCount();
+
     cxy location(5, 3);
     agriculture(location);
 
     location.x = 2;
     location.y += 3;
-    biotech(location);
+    biotech2(location);
 
     location.x = 2;
     location.y += 3;
@@ -132,6 +134,86 @@ void cLayout::biotech(cxy &location)
             location.x = 2;
             location.y += 3;
             first = true;
+        }
+    }
+}
+
+void cLayout::biotech2(cxy &location)
+{
+    // https://github.com/JamesBremner/workshoplocator/issues/12#issuecomment-1514917857
+
+    cModule *shared1, *shared2;
+    bool first = true;
+    bool even = true;
+
+    for (auto *w : myLayout)
+    {
+        if (w->type() != eWorkShopType::biotech)
+            continue;
+
+        w->move(location);
+
+        auto mg = new cModule(eModuleType::artificialG);
+        mg->move(cxy(w->location().x, w->location().y + 1));
+        w->add(mg);
+        mg = new cModule(eModuleType::artificialG);
+        mg->move(cxy(w->location().x, w->location().y - 1));
+        w->add(mg);
+
+        std::cout << first <<" "<< even << "\n";
+
+        if (first)
+        {
+            mg = new cModule(eModuleType::solar);
+            mg->move(cxy(w->location().x - 1, w->location().y + 1));
+            w->add(mg);
+            mg = new cModule(eModuleType::solar);
+            mg->move(cxy(w->location().x - 1, w->location().y - 1));
+            w->add(mg);
+            shared1 = new cModule(eModuleType::greenhouse);
+            shared1->move(cxy(w->location().x + 1, w->location().y + 1));
+            w->add(shared1);
+            shared2 = new cModule(eModuleType::greenhouse);
+            shared2->move(cxy(w->location().x + 1, w->location().y - 1));
+            w->add(shared2);
+            first = false;
+            even = false;
+        }
+        else
+        {
+            w->add(shared1);
+            w->add(shared2);
+            if (even)
+            {
+                shared1 = new cModule(eModuleType::greenhouse);
+                shared1->move(cxy(w->location().x + 1, w->location().y + 1));
+                w->add(shared1);
+                shared2 = new cModule(eModuleType::greenhouse);
+                shared2->move(cxy(w->location().x + 1, w->location().y - 1));
+                w->add(shared2);
+                even = false;
+            }
+            else
+            {
+                shared1 = new cModule(eModuleType::solar);
+                shared1->move(cxy(w->location().x + 1, w->location().y + 1));
+                w->add(shared1);
+                shared2 = new cModule(eModuleType::solar);
+                shared2->move(cxy(w->location().x + 1, w->location().y - 1));
+                w->add(shared2);
+                even = true;
+            }
+        }
+
+        w->CalcActualTemp();
+
+        location.x += 2;
+        if (location.x > 15)
+        {
+            location.x = 2;
+            location.y += 3;
+            first = true;
+            even = true;
         }
     }
 }
@@ -283,9 +365,7 @@ void cLayout::industry(cxy &location)
 int cLayout::moduleCount()
 {
     const int maxModules = 48;
-    int count = 0;
-    for (auto *w : myLayout)
-        count += w->moduleCount();
+    int count = cModule::moduleCount();
     if (count > maxModules)
         throw std::runtime_error(
             "cLayout::moduleCount module count exceeded with " + std::to_string(count));
@@ -295,13 +375,20 @@ int cLayout::moduleCount()
 std::string cLayout::text()
 {
     float totalProductivity = 0;
+    std::vector<int> mix(5);
     std::stringstream ss;
     ss << "\nLayout\n";
     for (auto *w : myLayout)
     {
         ss << w->text();
         totalProductivity += w->productivity();
+        mix[(int)w->type()] += 1;
     }
-    ss << "\nTotal Productivity: " << totalProductivity << "\n";
+    ss << "\n";
+    for (int m : mix)
+    {
+        ss << m << " ";
+    }
+    ss << " => Total Productivity: " << totalProductivity << "\n";
     return ss.str();
 }

@@ -6,6 +6,8 @@
 #include <algorithm>
 #include "workshop.h"
 
+int cModule::theModuleCount;
+
 cModule::cModule(eModuleType type)
     : myType(type)
 
@@ -34,6 +36,7 @@ cModule::cModule(eModuleType type)
         throw std::runtime_error(
             "cModule unrecognised type");
     }
+    theModuleCount++;
 }
 
 void cModule::move(const cxy &newLocation)
@@ -74,82 +77,6 @@ std::string cModule::text()
 void cWorkshop::move(const cxy &newLocation)
 {
     myLoc = newLocation;
-}
-
-bool cWorkshop::CalcActualTemp()
-{
-    // reset to base temp
-    myActualTemp = myBaseTemp;
-
-    // calculate heat change from each module, modified by distance
-    for (auto *m : myModules)
-    {
-        switch (m->type())
-        {
-        case eModuleType::solar:
-        case eModuleType::greenhouse:
-        case eModuleType::artificialG:
-        case eModuleType::stowage:
-        case eModuleType::recycling:
-
-            // heating module type
-            {
-                int delta = 0;
-                switch (myLoc.dist(m->location()))
-                {
-                case 0:
-                    throw std::runtime_error(
-                        "cWorkshop::CalcActualTemp bad location");
-                    break;
-                case 1:
-                    delta = m->heat();
-                    break;
-                case 2:
-                    delta = m->heat() - 2;
-                    break;
-                case 3:
-                    delta = m->heat() - 4;
-                    break;
-                case 4:
-                    delta = m->heat() - 6;
-                    break;
-                case 5:
-                    delta = m->heat() - 8;
-                    break;
-                default:
-                    break;
-                }
-                // disregard heat changes that are negative,
-                if (delta < 0)
-                    delta = 0;
-                myActualTemp += delta;
-            }
-            break;
-
-        case eModuleType::radiator:
-            {
-                // cooling module type
-
-                int delta = m->heat();
-                delta += 2 * (myLoc.dist(m->location()) - 1);
-                // disregard heat changes that are positive
-                if (delta > 0)
-                    delta = 0;
-                myActualTemp += delta;
-            }
-            break;
-
-        default:
-            throw std::runtime_error(
-                "cWorkshop::CalcActualTemp unrecognized module type");
-        }
-    }
-
-    // check workshop temperature inside limits
-    if (myMinTemp > myActualTemp || myActualTemp > myMaxTemp)
-        return false;
-
-    return true;
 }
 
 

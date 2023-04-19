@@ -60,10 +60,20 @@ public:
     }
     std::string text();
 
+    static void clearModuleCount()
+    {
+        theModuleCount = 0;
+    }
+    static int moduleCount()
+    {
+        return theModuleCount;
+    }
+
 protected:
     eModuleType myType;
     cxy myLoc;
     int myHeat;
+    static int theModuleCount;
 };
 
 class cWorkshop
@@ -125,6 +135,7 @@ private:
     std::vector<cWorkshop *> myLayout;
 
     void biotech( cxy& location );
+    void biotech2( cxy& location );
     void agriculture( cxy& location );
     void electronics( cxy& location );
     void energy( cxy& location );
