@@ -124,5 +124,8 @@ public:
 private:
     std::vector<cWorkshop *> myLayout;
 
+    void biotech( cxy& location );
+    void agriculture( cxy& location );
+
     int moduleCount();
 };
