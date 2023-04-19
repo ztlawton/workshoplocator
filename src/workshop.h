@@ -143,3 +143,9 @@ private:
 
     int moduleCount();
 };
+
+/// Insert character at location in ascii art grid
+void insertAscii(
+    std::vector<std::vector<char>> &vgrid,
+    const cxy &loc,
+    char c);
