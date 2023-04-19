@@ -189,6 +189,8 @@ std::string cWorkshop::text()
     }
     ss << "location: " << myLoc.x << " " << myLoc.y;
     ss << " temp: " << myActualTemp;
+    if( myActualTemp > myMaxTemp )
+        ss << " !!!! ";
     ss << " productivity: " << productivity() << "\n";
     for (auto *m : myModules)
     {

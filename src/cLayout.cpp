@@ -8,7 +8,7 @@
 
 void cLayout::calculateLayout()
 {
-    cxy location(2, 4);
+    cxy location(5, 3);
     agriculture(location);
 
     location.x = 2;
@@ -17,92 +17,15 @@ void cLayout::calculateLayout()
 
     location.x = 2;
     location.y += 3;
-    bool first = true;
-    for (auto *w : myLayout)
-    {
-        if (w->type() != eWorkShopType::electronics)
-            continue;
-
-        w->move(location);
-        auto mg = new cModule(eModuleType::solar);
-        mg->move(cxy(w->location().x - 1, w->location().y));
-        w->add(mg);
-        mg = new cModule(eModuleType::stowage);
-        mg->move(cxy(w->location().x + 1, w->location().y));
-        w->add(mg);
-        mg = new cModule(eModuleType::recycling);
-        mg->move(cxy(w->location().x, w->location().y + 1));
-        w->add(mg);
-
-        w->CalcActualTemp();
-
-        location.x += 3;
-        if (location.x > 15)
-        {
-            location.x = 2;
-            location.y += 3;
-            first = true;
-        }
-    }
+    electronics(location);
 
     location.x = 2;
     location.y += 3;
-    for (auto *w : myLayout)
-    {
-        if (w->type() != eWorkShopType::energy)
-            continue;
-
-        w->move(location);
-        auto mg = new cModule(eModuleType::artificialG);
-        mg->move(cxy(w->location().x - 1, w->location().y));
-        w->add(mg);
-        mg = new cModule(eModuleType::solar);
-        mg->move(cxy(w->location().x + 1, w->location().y));
-        w->add(mg);
-        mg = new cModule(eModuleType::stowage);
-        mg->move(cxy(w->location().x, w->location().y + 1));
-        w->add(mg);
-
-        w->CalcActualTemp();
-
-        location.x += 3;
-        if (location.x > 15)
-        {
-            location.x = 2;
-            location.y += 3;
-            first = true;
-        }
-    }
+    energy(location);
 
     location.x = 5;
-    location.y += 2;
-    first = true;
-    for (auto *w : myLayout)
-    {
-        if (w->type() != eWorkShopType::heavyindustry)
-            continue;
-
-        w->move(location);
-        auto mg = new cModule(eModuleType::solar);
-        mg->move(cxy(w->location().x - 1, w->location().y));
-        w->add(mg);
-        mg = new cModule(eModuleType::stowage);
-        mg->move(cxy(w->location().x + 1, w->location().y));
-        w->add(mg);
-        mg = new cModule(eModuleType::recycling);
-        mg->move(cxy(w->location().x, w->location().y + 1));
-        w->add(mg);
-
-        w->CalcActualTemp();
-
-        location.x += 3;
-        if (location.x > 15)
-        {
-            location.x = 2;
-            location.y += 3;
-            first = true;
-        }
-    }
+    location.y += 3;
+    industry(location);
 
     moduleCount();
 }
@@ -197,7 +120,151 @@ void cLayout::biotech(cxy &location)
         mg = new cModule(eModuleType::solar);
         mg->move(cxy(w->location().x, w->location().y - 1));
         w->add(mg);
+        mg = new cModule(eModuleType::stowage);
+        mg->move(cxy(w->location().x, w->location().y + 1));
+        w->add(mg);
+
+        w->CalcActualTemp();
+
+        location.x += 2;
+        if (location.x > 15)
+        {
+            location.x = 2;
+            location.y += 3;
+            first = true;
+        }
+    }
+}
+void cLayout::electronics(cxy &location)
+{
+    cModule *mg, *shared_module;
+    bool first = true;
+    for (auto *w : myLayout)
+    {
+        if (w->type() != eWorkShopType::electronics)
+            continue;
+
+        w->move(location);
+
+        if (first)
+        {
+            first = false;
+            mg = new cModule(eModuleType::recycling);
+            mg->move(cxy(w->location().x - 1, w->location().y));
+            w->add(mg);
+            shared_module = new cModule(eModuleType::recycling);
+            shared_module->move(cxy(w->location().x + 1, w->location().y));
+            w->add(shared_module);
+        }
+        else
+        {
+            w->add(shared_module); // shared module with previous workshop
+
+            shared_module = new cModule(eModuleType::recycling);
+            shared_module->move(cxy(w->location().x + 1, w->location().y));
+            w->add(shared_module);
+        }
+
+        mg = new cModule(eModuleType::solar);
+        mg->move(cxy(w->location().x, w->location().y - 1));
+        w->add(mg);
         mg = new cModule(eModuleType::greenhouse);
+        mg->move(cxy(w->location().x, w->location().y + 1));
+        w->add(mg);
+
+        w->CalcActualTemp();
+
+        location.x += 2;
+        if (location.x > 15)
+        {
+            location.x = 2;
+            location.y += 3;
+            first = true;
+        }
+    }
+}
+void cLayout::energy(cxy &location)
+{
+    cModule *mg, *shared_module;
+    bool first = true;
+    for (auto *w : myLayout)
+    {
+        if (w->type() != eWorkShopType::energy)
+            continue;
+
+        w->move(location);
+
+        if (first)
+        {
+            first = false;
+            mg = new cModule(eModuleType::solar);
+            mg->move(cxy(w->location().x - 1, w->location().y));
+            w->add(mg);
+            shared_module = new cModule(eModuleType::solar);
+            shared_module->move(cxy(w->location().x + 1, w->location().y));
+            w->add(shared_module);
+        }
+        else
+        {
+            w->add(shared_module); // shared module with previous workshop
+
+            shared_module = new cModule(eModuleType::solar);
+            shared_module->move(cxy(w->location().x + 1, w->location().y));
+            w->add(shared_module);
+        }
+
+        mg = new cModule(eModuleType::artificialG);
+        mg->move(cxy(w->location().x, w->location().y - 1));
+        w->add(mg);
+        mg = new cModule(eModuleType::stowage);
+        mg->move(cxy(w->location().x, w->location().y + 1));
+        w->add(mg);
+
+        w->CalcActualTemp();
+
+        location.x += 2;
+        if (location.x > 15)
+        {
+            location.x = 2;
+            location.y += 3;
+            first = true;
+        }
+    }
+}
+void cLayout::industry(cxy &location)
+{
+    cModule *mg, *shared_module;
+    bool first = true;
+    for (auto *w : myLayout)
+    {
+        if (w->type() != eWorkShopType::heavyindustry)
+            continue;
+
+        w->move(location);
+
+        if (first)
+        {
+            first = false;
+            mg = new cModule(eModuleType::stowage);
+            mg->move(cxy(w->location().x - 1, w->location().y));
+            w->add(mg);
+            shared_module = new cModule(eModuleType::stowage);
+            shared_module->move(cxy(w->location().x + 1, w->location().y));
+            w->add(shared_module);
+        }
+        else
+        {
+            w->add(shared_module); // shared module with previous workshop
+
+            shared_module = new cModule(eModuleType::stowage);
+            shared_module->move(cxy(w->location().x + 1, w->location().y));
+            w->add(shared_module);
+        }
+
+        mg = new cModule(eModuleType::solar);
+        mg->move(cxy(w->location().x, w->location().y - 1));
+        w->add(mg);
+        mg = new cModule(eModuleType::recycling);
         mg->move(cxy(w->location().x, w->location().y + 1));
         w->add(mg);
 

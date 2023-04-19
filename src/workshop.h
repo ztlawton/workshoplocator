@@ -126,6 +126,9 @@ private:
 
     void biotech( cxy& location );
     void agriculture( cxy& location );
+    void electronics( cxy& location );
+    void energy( cxy& location );
+    void industry( cxy& location );
 
     int moduleCount();
 };
