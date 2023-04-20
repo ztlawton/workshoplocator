@@ -139,6 +139,7 @@ private:
     void biotech( cxy& location );
     void biotech2( cxy& location );
     void agriculture( cxy& location );
+    void agriculture2( cxy& location );
     void electronics( cxy& location );
     void electronics2( cxy& location );
     void energy( cxy& location );

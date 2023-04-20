@@ -7,15 +7,16 @@
 #include "workshop.h"
 
 cLayout::cLayout()
-: myMaxModules( 48 )
-{}
+    : myMaxModules(48)
+{
+}
 
 void cLayout::calculateLayout()
 {
     cModule::clearModuleCount();
 
     cxy location(5, 3);
-    agriculture(location);
+    agriculture2(location);
 
     location.x = 2;
     location.y += 3;
@@ -80,6 +81,64 @@ void cLayout::agriculture(cxy &location)
         mg = new cModule(eModuleType::artificialG);
         mg->move(cxy(w->location().x, w->location().y - 1));
         w->add(mg);
+
+        w->CalcActualTemp();
+
+        location.x += 2;
+        if (location.x > 15)
+        {
+            location.x = 2;
+            location.y += 3;
+            first = true;
+        }
+    }
+}
+
+void cLayout::agriculture2(cxy &location)
+{
+    /// locate agricultural workshops so they share greenhouse modules
+    bool first = true;
+    bool even = true;
+    cModule *mg, *sh1, *sh2, *sh3;
+    for (auto *w : myLayout)
+    {
+        if (w->type() != eWorkShopType::agriculture)
+            continue;
+
+        w->move(location);
+        if (first)
+        {
+            mg = new cModule(eModuleType::greenhouse);
+            mg->move(cxy(w->location().x - 1, w->location().y));
+            w->add(mg);
+            first = false;
+        }
+        else
+        {
+            w->add(sh1); // shared greenhouse with previous workshop
+        }
+        if (even)
+        {
+            sh2 = new cModule(eModuleType::greenhouse);
+            sh2->move(cxy(w->location().x + 1, w->location().y + 1));
+            w->add(sh2);
+            even = false;
+        }
+        else
+        {
+            w->add(sh2);
+            even = true;
+        }
+
+        mg = new cModule(eModuleType::solar);
+        mg->move(cxy(w->location().x - 1, w->location().y + 1));
+        w->add(mg);
+        mg = new cModule(eModuleType::artificialG);
+        mg->move(cxy(w->location().x - 1, w->location().y - 1));
+        w->add(mg);
+        sh1 = new cModule(eModuleType::greenhouse);
+        sh1->move(cxy(w->location().x + 1, w->location().y));
+        w->add(sh1);
 
         w->CalcActualTemp();
 
@@ -284,16 +343,16 @@ void cLayout::electronics2(cxy &location)
         {
             first = false;
             mg = new cModule(eModuleType::stowage);
-            mg->move(cxy(w->location().x - 1, w->location().y+2));
+            mg->move(cxy(w->location().x - 1, w->location().y + 2));
             w->add(mg);
             shared1 = new cModule(eModuleType::stowage);
-            shared1->move(cxy(w->location().x + 1, w->location().y+2));
+            shared1->move(cxy(w->location().x + 1, w->location().y + 2));
             w->add(shared1);
             mg = new cModule(eModuleType::solar);
-            mg->move(cxy(w->location().x - 1, w->location().y+1));
+            mg->move(cxy(w->location().x - 1, w->location().y + 1));
             w->add(mg);
             shared2 = new cModule(eModuleType::solar);
-            shared2->move(cxy(w->location().x + 1, w->location().y+1));
+            shared2->move(cxy(w->location().x + 1, w->location().y + 1));
             w->add(shared2);
             mg = new cModule(eModuleType::recycling);
             mg->move(cxy(w->location().x - 1, w->location().y));
@@ -302,21 +361,21 @@ void cLayout::electronics2(cxy &location)
             shared3->move(cxy(w->location().x + 1, w->location().y));
             w->add(shared3);
             mg = new cModule(eModuleType::radiator);
-            mg->move(cxy(w->location().x - 1, w->location().y-1));
+            mg->move(cxy(w->location().x - 1, w->location().y - 1));
             w->add(mg);
             shared4 = new cModule(eModuleType::radiator);
-            shared4->move(cxy(w->location().x + 1, w->location().y-1));
+            shared4->move(cxy(w->location().x + 1, w->location().y - 1));
             w->add(shared4);
         }
         else
         {
             w->add(shared1);
             shared1 = new cModule(eModuleType::stowage);
-            shared1->move(cxy(w->location().x + 1, w->location().y+2));
+            shared1->move(cxy(w->location().x + 1, w->location().y + 2));
             w->add(shared1);
             w->add(shared2);
             shared2 = new cModule(eModuleType::solar);
-            shared2->move(cxy(w->location().x + 1, w->location().y+1));
+            shared2->move(cxy(w->location().x + 1, w->location().y + 1));
             w->add(shared2);
             w->add(shared3);
             shared3 = new cModule(eModuleType::recycling);
@@ -324,11 +383,9 @@ void cLayout::electronics2(cxy &location)
             w->add(shared3);
             w->add(shared4);
             shared4 = new cModule(eModuleType::radiator);
-            shared4->move(cxy(w->location().x + 1, w->location().y-1));
+            shared4->move(cxy(w->location().x + 1, w->location().y - 1));
             w->add(shared4);
-
         }
-
 
         w->CalcActualTemp();
 
@@ -461,8 +518,8 @@ std::string cLayout::text()
     }
     ss << "\n";
 
-   ss << "Module Count: " << cModule::moduleCount() 
-    << " ( max " << myMaxModules << " )\n";
+    ss << "Module Count: " << cModule::moduleCount()
+       << " ( max " << myMaxModules << " )\n";
 
     for (int m : mix)
     {
