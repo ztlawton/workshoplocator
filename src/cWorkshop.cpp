@@ -123,7 +123,7 @@ int cWorkshop::productivity()
 
 float cWorkshop::ProductivityBonusPoints()
 {
-    const std::vector<float> PBPdist{-1, 16.67, 13.33, 1, 6.67, 3.33};
+    const std::vector<float> PBPdist{-1, 16.67, 13.33, 10, 6.67, 3.33};
     std::vector<float> PBPtype(6);
     float totalPBP = 0;
 
