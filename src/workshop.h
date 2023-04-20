@@ -124,6 +124,7 @@ private:
 class cLayout
 {
 public:
+    cLayout();
     void setWorkshopMix(
         const std::vector<eWorkShopType> mix);
 
@@ -133,6 +134,7 @@ public:
 
 private:
     std::vector<cWorkshop *> myLayout;
+    int myMaxModules;
 
     void biotech( cxy& location );
     void biotech2( cxy& location );

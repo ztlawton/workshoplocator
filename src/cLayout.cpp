@@ -6,6 +6,10 @@
 #include <algorithm>
 #include "workshop.h"
 
+cLayout::cLayout()
+: myMaxModules( 48 )
+{}
+
 void cLayout::calculateLayout()
 {
     cModule::clearModuleCount();
@@ -159,8 +163,6 @@ void cLayout::biotech2(cxy &location)
         mg = new cModule(eModuleType::artificialG);
         mg->move(cxy(w->location().x, w->location().y - 1));
         w->add(mg);
-
-        std::cout << first <<" "<< even << "\n";
 
         if (first)
         {
@@ -438,9 +440,8 @@ void cLayout::industry(cxy &location)
 
 int cLayout::moduleCount()
 {
-    const int maxModules = 48;
     int count = cModule::moduleCount();
-    if (count > maxModules)
+    if (count > myMaxModules)
         throw std::runtime_error(
             "cLayout::moduleCount module count exceeded with " + std::to_string(count));
     return count;
@@ -459,6 +460,10 @@ std::string cLayout::text()
         mix[(int)w->type()] += 1;
     }
     ss << "\n";
+
+   ss << "Module Count: " << cModule::moduleCount() 
+    << " ( max " << myMaxModules << " )\n";
+
     for (int m : mix)
     {
         ss << m << " ";
