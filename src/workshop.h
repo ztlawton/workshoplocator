@@ -60,20 +60,24 @@ public:
     }
     std::string text();
 
-    static void clearModuleCount()
-    {
-        theModuleCount = 0;
-    }
+    static void clearModuleCount();
+
     static int moduleCount()
     {
         return theModuleCount;
+    }
+    static cxy lastLocation()
+    {
+        return theLastLocation;
     }
 
 protected:
     eModuleType myType;
     cxy myLoc;
     int myHeat;
+
     static int theModuleCount;
+    static cxy theLastLocation;
 };
 
 class cWorkshop
@@ -88,6 +92,15 @@ public:
     bool CalcActualTemp();
 
     void add( cModule* m );
+
+    /// @brief Construct and add a module
+    /// @param type of module
+    /// @param loc location
+    /// @return pointer to new module
+    cModule* add( 
+        eModuleType type,
+        const cxy& loc );
+
     void addRadiator();
     int productivity();
 
@@ -143,6 +156,7 @@ private:
     void electronics( cxy& location );
     void electronics2( cxy& location );
     void energy( cxy& location );
+    void energy2( cxy& location );
     void industry( cxy& location );
 
     int moduleCount();

@@ -7,6 +7,7 @@
 #include "workshop.h"
 
 int cModule::theModuleCount;
+cxy cModule::theLastLocation;
 
 cModule::cModule(eModuleType type)
     : myType(type)
@@ -39,9 +40,18 @@ cModule::cModule(eModuleType type)
     theModuleCount++;
 }
 
+    void cModule::clearModuleCount()
+    {
+        theModuleCount = 0;
+        theLastLocation.y = 0;
+    }
+
 void cModule::move(const cxy &newLocation)
 {
     myLoc = newLocation;
+    if( myLoc.y > theLastLocation.y )
+        theLastLocation.y = myLoc.y;
+
 }
 
 std::string cModule::text()

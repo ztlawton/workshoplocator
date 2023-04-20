@@ -99,6 +99,16 @@ void cWorkshop::add(cModule *m)
     myModules.push_back(m);
 }
 
+cModule *cWorkshop::add(
+    eModuleType type,
+    const cxy &loc)
+{
+    auto mg = new cModule(type);
+    mg->move(loc);
+    myModules.push_back(mg);
+    return mg;
+}
+
 void cWorkshop::addRadiator()
 {
     myModules.push_back(new cModule(eModuleType::radiator));
@@ -164,13 +174,12 @@ float cWorkshop::ProductivityBonusPoints()
     return totalPBP;
 }
 
-
 bool cWorkshop::CalcActualTemp()
 {
     // reset to base temp
     myActualTemp = myBaseTemp;
 
-    //std::cout << "base temp " << myActualTemp << "\n";
+    // std::cout << "base temp " << myActualTemp << "\n";
 
     // calculate heat change from each module, modified by distance
     for (auto *m : myModules)
@@ -215,22 +224,22 @@ bool cWorkshop::CalcActualTemp()
                     delta = 0;
                 myActualTemp += delta;
 
-                //std::cout << " after m type " << (int)m->type() <<" " << myActualTemp << "\n";
+                // std::cout << " after m type " << (int)m->type() <<" " << myActualTemp << "\n";
             }
             break;
 
         case eModuleType::radiator:
-            {
-                // cooling module type
+        {
+            // cooling module type
 
-                int delta = m->heat();
-                delta += 2 * (myLoc.dist(m->location()) - 1);
-                // disregard heat changes that are positive
-                if (delta > 0)
-                    delta = 0;
-                myActualTemp += delta;
-            }
-            break;
+            int delta = m->heat();
+            delta += 2 * (myLoc.dist(m->location()) - 1);
+            // disregard heat changes that are positive
+            if (delta > 0)
+                delta = 0;
+            myActualTemp += delta;
+        }
+        break;
 
         default:
             throw std::runtime_error(
@@ -244,7 +253,6 @@ bool cWorkshop::CalcActualTemp()
 
     return true;
 }
-
 
 std::string cWorkshop::text()
 {
@@ -271,7 +279,7 @@ std::string cWorkshop::text()
     }
     ss << "location: " << myLoc.x << " " << myLoc.y;
     ss << " temp: " << myActualTemp;
-    if( myActualTemp > myMaxTemp )
+    if (myActualTemp > myMaxTemp)
         ss << " !!!! ";
     ss << " productivity: " << productivity() << "\n";
     for (auto *m : myModules)
@@ -286,11 +294,12 @@ void insertAscii(
     const cxy &loc,
     char c)
 {
-    if( 0 > loc.x || loc.x >= 17 ||
-     0 > loc.y || loc.y >= 17) {
+    if (0 > loc.x || loc.x >= 17 ||
+        0 > loc.y || loc.y >= 17)
+    {
         std::cout << "WARNING: location outside grid\n";
         return;
-     }
+    }
     vgrid[loc.y][loc.x] = c;
 }
 void cWorkshop::asciiArt(std::vector<std::vector<char>> &vgrid)
