@@ -15,7 +15,7 @@ void cLayout::calculateLayout()
 {
     cModule::clearModuleCount();
 
-    cxy location(5, 3);
+    cxy location(5, 2);
     agriculture2(location);
 
     location.x = 2;
