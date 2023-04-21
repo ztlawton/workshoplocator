@@ -48,7 +48,18 @@ cModule::cModule(eModuleType type)
 
 void cModule::move(const cxy &newLocation)
 {
+    // check location is within grid
+    // TODO: check for cut off corners
+
+    const int max = 17;
+    if (0 > newLocation.x || newLocation.x >= max ||
+        0 > newLocation.y || newLocation.y >= max)
+        throw std::runtime_error(
+            "cModule::move Outside grid"        );
+
     myLoc = newLocation;
+
+    // record maximum y located module
     if( myLoc.y > theLastLocation.y )
         theLastLocation.y = myLoc.y;
 

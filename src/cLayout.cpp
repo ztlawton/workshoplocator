@@ -31,7 +31,7 @@ void cLayout::calculateLayout()
     energy2(location);
 
     location.x = 5;
-    location.y += 3;
+    location.y += 1;
     industry(location);
 
     moduleCount();
