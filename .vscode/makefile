@@ -23,7 +23,8 @@ CCflags = -std=c++17 $(OPT) -D_mingw_
 OBJ_workshopLocatorr = \
 	$(ODIR)/main.o \
 	$(ODIR)/cWorkshop.o \
-	$(ODIR)/cLayout.o 
+	$(ODIR)/cLayout.o \
+	$(ODIR)/cAsciiArt.o 
 
 ### COMPILE
 

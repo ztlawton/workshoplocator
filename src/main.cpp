@@ -156,7 +156,9 @@ main()
     L.setWorkshopMix(mix);
     L.calculateLayout();
     std::cout << L.text();
-    L.displayAsciiArt();
+    
+    cAsciiArt A;
+    A.display( L );
 
     return 0;
 }

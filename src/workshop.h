@@ -94,15 +94,15 @@ public:
     /// @return true if temperature within limits
     bool CalcActualTemp();
 
-    void add( cModule* m );
+    void add(cModule *m);
 
     /// @brief Construct and add a module
     /// @param type of module
     /// @param loc location
     /// @return pointer to new module
-    cModule* add( 
+    cModule *add(
         eModuleType type,
-        const cxy& loc );
+        const cxy &loc);
 
     void addRadiator();
     int productivity();
@@ -111,30 +111,43 @@ public:
     {
         return myModules.size();
     }
-    cxy location() const{
+    cxy location() const
+    {
         return myLoc;
     }
-    eWorkShopType type() const{
+    eWorkShopType type() const
+    {
         return myType;
     }
 
-    void asciiArt( std::vector<std::vector<char>>& vgrid );
+    char ascii() const;
 
     std::string text();
+
+    std::vector<cModule*>::const_iterator
+    begin()
+    {
+        return myModules.begin();
+    }
+    std::vector<cModule*>::const_iterator
+    end()
+    {
+        return myModules.end();
+    }
 
 private:
     eWorkShopType myType;
     cxy myLoc;
     std::vector<eModuleType> myModuleNeeds;
     std::vector<cModule *> myModules;
-    std::vector<int> myPBPmax;          // max PBP contribution from each module type
+    std::vector<int> myPBPmax; // max PBP contribution from each module type
     int myBaseTemp;
     int myMinTemp;
     int myMaxTemp;
     int myActualTemp;
 
     float ProductivityBonusPoints();
-    char ascii() const;
+
 };
 
 /// @brief Layout of workshops and modules
@@ -147,27 +160,45 @@ public:
 
     void calculateLayout();
     std::string text();
-    void displayAsciiArt();
+    //void displayAsciiArt();
+
+    std::vector<cWorkshop *>::const_iterator
+    begin() const
+    {
+        return myLayout.begin();
+    }
+    std::vector<cWorkshop *>::const_iterator
+    end() const
+    {
+        return myLayout.end();
+    }
 
 private:
     std::vector<cWorkshop *> myLayout;
     int myMaxModules;
 
-    void biotech( cxy& location );
-    void biotech2( cxy& location );
-    void agriculture( cxy& location );
-    void agriculture2( cxy& location );
-    void electronics( cxy& location );
-    void electronics2( cxy& location );
-    void energy( cxy& location );
-    void energy2( cxy& location );
-    void industry( cxy& location );
+    void biotech(cxy &location);
+    void biotech2(cxy &location);
+    void agriculture(cxy &location);
+    void agriculture2(cxy &location);
+    void electronics(cxy &location);
+    void electronics2(cxy &location);
+    void energy(cxy &location);
+    void energy2(cxy &location);
+    void industry(cxy &location);
 
     int moduleCount();
 };
 
-/// Insert character at location in ascii art grid
-void insertAscii(
-    std::vector<std::vector<char>> &vgrid,
-    const cxy &loc,
-    char c);
+class cAsciiArt
+{
+public:
+    cAsciiArt();
+    void display( const cLayout& layout );
+
+private:
+    std::vector<std::vector<char>> myGrid;
+    void insert( const cxy& loc, char c );
+    void display();
+};
+
