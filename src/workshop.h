@@ -134,6 +134,7 @@ private:
     int myActualTemp;
 
     float ProductivityBonusPoints();
+    char ascii() const;
 };
 
 /// @brief Layout of workshops and modules

@@ -302,9 +302,38 @@ void insertAscii(
     }
     vgrid[loc.y][loc.x] = c;
 }
+char cWorkshop::ascii() const
+{
+    char c;
+    switch (myType)
+    {
+    case eWorkShopType::agriculture:
+        c = 'A';
+        break;
+    case eWorkShopType::biotech:
+        c = 'B';
+        break;
+    case eWorkShopType::electronics:
+        c = 'E';
+        break;
+    case eWorkShopType::energy:
+        c = 'N';
+        break;
+    case eWorkShopType::heavyindustry:
+        c = 'H';
+        break;
+    default:
+        throw std::runtime_error(
+            "cWorkshop::ascii unkown workshop type");
+    }
+    return c;
+}
 void cWorkshop::asciiArt(std::vector<std::vector<char>> &vgrid)
 {
-    insertAscii(vgrid, myLoc, 'W');
+    insertAscii(
+        vgrid,
+        myLoc,
+        ascii());
     for (auto *m : myModules)
     {
         insertAscii(
