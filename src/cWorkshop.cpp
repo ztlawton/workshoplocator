@@ -307,7 +307,10 @@ void cWorkshop::asciiArt(std::vector<std::vector<char>> &vgrid)
     insertAscii(vgrid, myLoc, 'W');
     for (auto *m : myModules)
     {
-        insertAscii(vgrid, m->location(), 'm');
+        insertAscii(
+            vgrid,
+            m->location(),
+            m->ascii());
     }
 }
 

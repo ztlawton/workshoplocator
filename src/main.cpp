@@ -40,11 +40,11 @@ cModule::cModule(eModuleType type)
     theModuleCount++;
 }
 
-    void cModule::clearModuleCount()
-    {
-        theModuleCount = 0;
-        theLastLocation.y = 0;
-    }
+void cModule::clearModuleCount()
+{
+    theModuleCount = 0;
+    theLastLocation.y = 0;
+}
 
 void cModule::move(const cxy &newLocation)
 {
@@ -55,14 +55,13 @@ void cModule::move(const cxy &newLocation)
     if (0 > newLocation.x || newLocation.x >= max ||
         0 > newLocation.y || newLocation.y >= max)
         throw std::runtime_error(
-            "cModule::move Outside grid"        );
+            "cModule::move Outside grid");
 
     myLoc = newLocation;
 
     // record maximum y located module
-    if( myLoc.y > theLastLocation.y )
+    if (myLoc.y > theLastLocation.y)
         theLastLocation.y = myLoc.y;
-
 }
 
 std::string cModule::text()
@@ -95,11 +94,41 @@ std::string cModule::text()
     return ss.str();
 }
 
+char cModule::ascii()
+{
+    char c;
+    switch (myType)
+    {
+    case eModuleType::radiator:
+        c = 'r';
+        break;
+    case eModuleType::solar:
+        c = 's';
+        break;
+    case eModuleType::greenhouse:
+        c = 'g';
+        break;
+    case eModuleType::artificialG:
+        c = 'a';
+        break;
+    case eModuleType::stowage:
+        c = 't';
+        break;
+    case eModuleType::recycling:
+        c = 'c';
+        break;
+    default:
+        throw std::runtime_error(
+            " cModule::ascii unrecognized module type");
+    }
+
+    return c;
+}
+
 void cWorkshop::move(const cxy &newLocation)
 {
     myLoc = newLocation;
 }
-
 
 std::vector<eWorkShopType>
 workshopMixFromUser()

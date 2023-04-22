@@ -58,7 +58,10 @@ public:
     {
         return myHeat;
     }
+
     std::string text();
+
+    char ascii();
 
     static void clearModuleCount();
 
