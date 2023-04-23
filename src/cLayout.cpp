@@ -23,7 +23,7 @@ void cLayout::calculateLayout()
     biotech2(location);
 
     location.x = 2;
-    location.y += 3;
+    //location.y += 3;
     electronics2(location);
 
     location.x = 4;
@@ -328,7 +328,7 @@ void cLayout::electronics(cxy &location)
 }
 void cLayout::electronics2(cxy &location)
 {
-    location.x += 1;
+    location.y = cModule::lastLocation().y + 2;
 
     cModule *mg, *shared1, *shared2, *shared3, *shared4;
     bool first = true;
@@ -336,6 +336,15 @@ void cLayout::electronics2(cxy &location)
     {
         if (w->type() != eWorkShopType::electronics)
             continue;
+
+        // check for involvement with the central grid square TID11
+        if( 7 <= location.y && location.y <= 10 &&
+            7 < location.x && location.x < 10 )
+        {    
+            location.x = 10;
+            first = true;
+        }
+
 
         w->move(location);
 

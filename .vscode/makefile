@@ -20,7 +20,7 @@ OPT = -g
 CCflags = -std=c++17 $(OPT) -D_mingw_
 
 # sources
-OBJ_workshopLocatorr = \
+OBJ_workshopLocator = \
 	$(ODIR)/main.o \
 	$(ODIR)/cWorkshop.o \
 	$(ODIR)/cLayout.o \
@@ -32,7 +32,7 @@ $(ODIR)/%.o: %.cpp  $(DEPS)
 	g++  $(CCflags) \
 	-c -o $@ $< $(INCS)
 
-starter: $(OBJ_workshopLocatorr)
+starter: $(OBJ_workshopLocator)
 	g++ $(OPT) \
 	-o bin/workshopLocator.exe $^  \
 	$(static_link_flags) $(LIBS)
