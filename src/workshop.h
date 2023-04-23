@@ -35,6 +35,11 @@ public:
     {
         return abs(x - other.x) + abs(y - other.y);
     }
+
+    bool operator==(const cxy& other ) const
+    {
+        return ( x == other.x && y == other.y );
+    }
     int x;
     int y;
 };
@@ -124,12 +129,12 @@ public:
 
     std::string text();
 
-    std::vector<cModule*>::const_iterator
+    std::vector<cModule *>::const_iterator
     begin()
     {
         return myModules.begin();
     }
-    std::vector<cModule*>::const_iterator
+    std::vector<cModule *>::const_iterator
     end()
     {
         return myModules.end();
@@ -147,7 +152,6 @@ private:
     int myActualTemp;
 
     float ProductivityBonusPoints();
-
 };
 
 /// @brief Layout of workshops and modules
@@ -160,7 +164,7 @@ public:
 
     void calculateLayout();
     std::string text();
-    //void displayAsciiArt();
+    // void displayAsciiArt();
 
     std::vector<cWorkshop *>::const_iterator
     begin() const
@@ -187,18 +191,35 @@ private:
     void energy2(cxy &location);
     void industry(cxy &location);
 
+    /// @brief Total modules in use
+    /// @return count
     int moduleCount();
+
+    /// @brief Share or construct a module
+    /// @param type module type
+    /// @param loc location
+    /// @return pointer to module at location of same type if already exists
+    /// @return pointer to new module at location if empty
+    /// throws exception if location has module of different type
+    cModule* shareOrConstruct(
+        eModuleType type,
+        const cxy &loc);
+
+    /// @brief Find module at location
+    /// @param loc location
+    /// @return module pointer if present, otherwise 0
+    cModule* find( 
+        const cxy &loc ) const;
 };
 
 class cAsciiArt
 {
 public:
     cAsciiArt();
-    void display( const cLayout& layout );
+    void display(const cLayout &layout);
 
 private:
     std::vector<std::vector<char>> myGrid;
-    void insert( const cxy& loc, char c );
+    void insert(const cxy &loc, char c);
     void display();
 };
-

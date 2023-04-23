@@ -449,7 +449,6 @@ void cLayout::energy(cxy &location)
 }
 void cLayout::energy2(cxy &location)
 {
-    cModule *sh[20];
     location.y = cModule::lastLocation().y + 2;
     int count = 0;
     for (auto *w : myLayout)
@@ -461,77 +460,116 @@ void cLayout::energy2(cxy &location)
 
         if (count == 0)
         {
-            count++;
-            w->add(
+
+            w->add(shareOrConstruct(
                 eModuleType::artificialG,
-                cxy(w->location().x - 2, w->location().y - 1));
-            sh[3] = w->add(
+                cxy(location.x - 2, location.y - 1)));
+            w->add(shareOrConstruct(
                 eModuleType::stowage,
-                cxy(w->location().x - 2, w->location().y + 1));
-            w->add(
+                cxy(location.x - 2, location.y + 1)));
+            w->add(shareOrConstruct(
                 eModuleType::radiator,
-                cxy(w->location().x - 1, w->location().y - 1));
-            sh[4] = w->add(
+                cxy(location.x - 1, location.y - 1)));
+            w->add(shareOrConstruct(
                 eModuleType::radiator,
-                cxy(w->location().x - 1, w->location().y + 1));
-            w->add(
+                cxy(location.x - 1, location.y + 1)));
+            w->add(shareOrConstruct(
                 eModuleType::solar,
-                cxy(w->location().x, w->location().y - 1));
-            sh[5] = w->add(
+                cxy(location.x, location.y - 1)));
+            w->add(shareOrConstruct(
                 eModuleType::solar,
-                cxy(w->location().x, w->location().y + 1));
-            sh[2] = w->add(
+                cxy(location.x, location.y + 1)));
+            w->add(shareOrConstruct(
                 eModuleType::solar,
-                cxy(w->location().x + 1, w->location().y));
+                cxy(location.x + 1, location.y)));
             location.x += 1;
             location.y += 1;
+            count = 1;
         }
         else if (count == 1)
         {
-            count++;
-            w->add(sh[2]);
-            w->add(sh[5]);
-            sh[8] = w->add(
+            w->add(shareOrConstruct(
                 eModuleType::solar,
-                cxy(w->location().x, w->location().y + 1));
-            w->add(
+                cxy(location.x, location.y - 1)));
+            w->add(shareOrConstruct(
+                eModuleType::solar,
+                cxy(location.x-1, location.y)));
+            w->add(shareOrConstruct(
+                eModuleType::solar,
+                cxy(location.x, location.y+1)));
+            w->add(shareOrConstruct(
                 eModuleType::radiator,
-                cxy(w->location().x + 1, w->location().y - 1));
-            sh[9] = w->add(
-                eModuleType::radiator,
-                cxy(w->location().x + 1, w->location().y + 1));
-            w->add(
+                cxy(location.x+1, location.y-1)));
+            w->add(shareOrConstruct(
                 eModuleType::artificialG,
-                cxy(w->location().x + 2, w->location().y - 1));
-            sh[10] = w->add(
+                cxy(location.x+2, location.y-1)));
+            w->add(shareOrConstruct(
+                eModuleType::radiator,
+                cxy(location.x+1, location.y+1)));
+            w->add(shareOrConstruct(
                 eModuleType::stowage,
-                cxy(w->location().x + 2, w->location().y + 1));
+                cxy(location.x+2, location.y+1)));
+
+            count = 2;
             location.x += -1;
             location.y += 1;
         }
         else if (count == 2)
         {
-            count++;
-            w->add(sh[3]);
-            w->add(sh[4]);
-            w->add(sh[5]);
-            w->add(sh[8]);
-            w->add(
-                eModuleType::artificialG,
-                cxy(w->location().x - 2, w->location().y + 1));
-            w->add(
-                eModuleType::radiator,
-                cxy(w->location().x -1, w->location().y + 1));
-            w->add(
+            w->add(shareOrConstruct(
                 eModuleType::solar,
-                cxy(w->location().x, w->location().y + 1));
-        }
-        else
-        {
-            throw std::runtime_error(
-                "cLayout::energy2 max energy workshops ( 3 ) exceeded"            );
-        }
+                cxy(location.x, location.y - 1)));
+            w->add(shareOrConstruct(
+                eModuleType::solar,
+                cxy(location.x+1, location.y)));
+            w->add(shareOrConstruct(
+                eModuleType::solar,
+                cxy(location.x, location.y+1)));
+            w->add(shareOrConstruct(
+                eModuleType::stowage,
+                cxy(location.x-2, location.y-1)));
+            w->add(shareOrConstruct(
+                eModuleType::radiator,
+                cxy(location.x-1, location.y-1)));
+            w->add(shareOrConstruct(
+                eModuleType::artificialG,
+                cxy(location.x-2, location.y+1)));
+            w->add(shareOrConstruct(
+                eModuleType::radiator,
+                cxy(location.x-1, location.y+1)));
 
+            count = 3;
+            location.x += 1;
+            location.y += 1;
+        }
+        else if (count == 3)
+        {
+            w->add(shareOrConstruct(
+                eModuleType::solar,
+                cxy(location.x, location.y - 1)));
+            w->add(shareOrConstruct(
+                eModuleType::solar,
+                cxy(location.x-1, location.y)));
+            w->add(shareOrConstruct(
+                eModuleType::solar,
+                cxy(location.x, location.y+1)));
+            w->add(shareOrConstruct(
+                eModuleType::radiator,
+                cxy(location.x+1, location.y-1)));
+            w->add(shareOrConstruct(
+                eModuleType::stowage,
+                cxy(location.x+2, location.y-1)));
+            w->add(shareOrConstruct(
+                eModuleType::radiator,
+                cxy(location.x+1, location.y+1)));
+            w->add(shareOrConstruct(
+                eModuleType::artificialG,
+                cxy(location.x+2, location.y+1)));
+
+            count = 0;
+            location.x += -1;
+            location.y += 1;
+        }
         w->CalcActualTemp();
     }
 }
@@ -591,6 +629,33 @@ int cLayout::moduleCount()
         throw std::runtime_error(
             "cLayout::moduleCount module count exceeded with " + std::to_string(count));
     return count;
+}
+
+cModule *cLayout::find(const cxy &loc) const
+{
+    for (auto *w : myLayout)
+        for (auto *m : *w)
+            if (loc == m->location())
+                return m;
+    return 0;
+}
+
+cModule *cLayout::shareOrConstruct(
+    eModuleType type,
+    const cxy &loc)
+{
+    auto *m = find(loc);
+    if (!m)
+    {
+        m = new cModule(type);
+        m->move(loc);
+        return m;
+    }
+    if (m->type() != type)
+        throw std::runtime_error(
+            "cLayout::share Two different modules on same location");
+    return m;
+    
 }
 
 std::string cLayout::text()
