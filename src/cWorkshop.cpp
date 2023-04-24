@@ -79,6 +79,12 @@ cWorkshop::cWorkshop(
     }
 }
 
+
+void cWorkshop::move(const cxy &newLocation)
+{
+    myLoc = newLocation;
+}
+
 void cWorkshop::ConstructModules()
 {
     for (auto m : myModuleNeeds)
@@ -105,7 +111,7 @@ cModule *cWorkshop::add(
 {
     auto mg = new cModule(type);
     mg->move(loc);
-    myModules.push_back(mg);
+    add(mg);
     return mg;
 }
 

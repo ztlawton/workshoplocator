@@ -3,6 +3,8 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <set>
+#include <unordered_set>
 #include <algorithm>
 #include "workshop.h"
 
@@ -23,7 +25,7 @@ void cLayout::calculateLayout()
     biotech2(location);
 
     location.x = 2;
-    //location.y += 3;
+    // location.y += 3;
     electronics2(location);
 
     location.x = 4;
@@ -35,6 +37,7 @@ void cLayout::calculateLayout()
     industry(location);
 
     moduleCount();
+    linkCount();
 }
 
 void cLayout::setWorkshopMix(
@@ -338,13 +341,12 @@ void cLayout::electronics2(cxy &location)
             continue;
 
         // check for involvement with the central grid square TID11
-        if( 7 <= location.y && location.y <= 10 &&
-            7 < location.x && location.x < 10 )
-        {    
+        if (7 <= location.y && location.y <= 10 &&
+            7 < location.x && location.x < 10)
+        {
             location.x = 10;
             first = true;
         }
-
 
         w->move(location);
 
@@ -502,22 +504,22 @@ void cLayout::energy2(cxy &location)
                 cxy(location.x, location.y - 1)));
             w->add(shareOrConstruct(
                 eModuleType::solar,
-                cxy(location.x-1, location.y)));
+                cxy(location.x - 1, location.y)));
             w->add(shareOrConstruct(
                 eModuleType::solar,
-                cxy(location.x, location.y+1)));
+                cxy(location.x, location.y + 1)));
             w->add(shareOrConstruct(
                 eModuleType::radiator,
-                cxy(location.x+1, location.y-1)));
+                cxy(location.x + 1, location.y - 1)));
             w->add(shareOrConstruct(
                 eModuleType::artificialG,
-                cxy(location.x+2, location.y-1)));
+                cxy(location.x + 2, location.y - 1)));
             w->add(shareOrConstruct(
                 eModuleType::radiator,
-                cxy(location.x+1, location.y+1)));
+                cxy(location.x + 1, location.y + 1)));
             w->add(shareOrConstruct(
                 eModuleType::stowage,
-                cxy(location.x+2, location.y+1)));
+                cxy(location.x + 2, location.y + 1)));
 
             count = 2;
             location.x += -1;
@@ -530,22 +532,22 @@ void cLayout::energy2(cxy &location)
                 cxy(location.x, location.y - 1)));
             w->add(shareOrConstruct(
                 eModuleType::solar,
-                cxy(location.x+1, location.y)));
+                cxy(location.x + 1, location.y)));
             w->add(shareOrConstruct(
                 eModuleType::solar,
-                cxy(location.x, location.y+1)));
+                cxy(location.x, location.y + 1)));
             w->add(shareOrConstruct(
                 eModuleType::stowage,
-                cxy(location.x-2, location.y-1)));
+                cxy(location.x - 2, location.y - 1)));
             w->add(shareOrConstruct(
                 eModuleType::radiator,
-                cxy(location.x-1, location.y-1)));
+                cxy(location.x - 1, location.y - 1)));
             w->add(shareOrConstruct(
                 eModuleType::artificialG,
-                cxy(location.x-2, location.y+1)));
+                cxy(location.x - 2, location.y + 1)));
             w->add(shareOrConstruct(
                 eModuleType::radiator,
-                cxy(location.x-1, location.y+1)));
+                cxy(location.x - 1, location.y + 1)));
 
             count = 3;
             location.x += 1;
@@ -558,22 +560,22 @@ void cLayout::energy2(cxy &location)
                 cxy(location.x, location.y - 1)));
             w->add(shareOrConstruct(
                 eModuleType::solar,
-                cxy(location.x-1, location.y)));
+                cxy(location.x - 1, location.y)));
             w->add(shareOrConstruct(
                 eModuleType::solar,
-                cxy(location.x, location.y+1)));
+                cxy(location.x, location.y + 1)));
             w->add(shareOrConstruct(
                 eModuleType::radiator,
-                cxy(location.x+1, location.y-1)));
+                cxy(location.x + 1, location.y - 1)));
             w->add(shareOrConstruct(
                 eModuleType::stowage,
-                cxy(location.x+2, location.y-1)));
+                cxy(location.x + 2, location.y - 1)));
             w->add(shareOrConstruct(
                 eModuleType::radiator,
-                cxy(location.x+1, location.y+1)));
+                cxy(location.x + 1, location.y + 1)));
             w->add(shareOrConstruct(
                 eModuleType::artificialG,
-                cxy(location.x+2, location.y+1)));
+                cxy(location.x + 2, location.y + 1)));
 
             count = 0;
             location.x += -1;
@@ -640,6 +642,58 @@ int cLayout::moduleCount()
     return count;
 }
 
+void cLayout::insert(const cxy &s, const cxy &d)
+{
+    int si = 17 * s.y + s.x;
+    int di = 17 * d.y + d.x;
+    if (di < si)
+    {
+        int temp = si;
+        si = di;
+        di = temp;
+    }
+    setEdge.insert(std::make_pair(si, di));
+}
+
+int cLayout::linkCount()
+{
+    setEdge.clear();
+
+    for (auto *w : myLayout)
+    {
+        int wx = w->location().x;
+        int wy = w->location().y;
+        for (auto *m : *w)
+        {
+            int mx = m->location().x;
+            int my = m->location().y;
+            int dy = wy - my;
+            if (dy)
+            {
+                int inc = 1;
+                if (dy < 0)
+                    inc = -1;
+                cxy prev(mx, my);
+                for (int y = my + inc; y != wy; y += inc)
+                    insert(prev, cxy(mx, y));
+                insert(prev, cxy(mx, wy));
+            }
+            int dx = wx - mx;
+            if (dx)
+            {
+                int inc = 1;
+                if (dx < 0)
+                    inc = -1;
+                cxy prev(mx, wy);
+                for (int x = mx + inc; x != wx; x += inc)
+                    insert(prev, cxy(x, wy));
+                insert(prev, w->location());
+            }
+        }
+    }
+    return setEdge.size();
+}
+
 cModule *cLayout::find(const cxy &loc) const
 {
     for (auto *w : myLayout)
@@ -664,7 +718,6 @@ cModule *cLayout::shareOrConstruct(
         throw std::runtime_error(
             "cLayout::share Two different modules on same location");
     return m;
-    
 }
 
 std::string cLayout::text()
@@ -682,7 +735,8 @@ std::string cLayout::text()
     ss << "\n";
 
     ss << "Module Count: " << cModule::moduleCount()
-       << " ( max " << myMaxModules << " )\n";
+       << " ( max " << myMaxModules << " )";
+    ss << "   Link Count: " << setEdge.size() << "\n";
 
     for (int m : mix)
     {

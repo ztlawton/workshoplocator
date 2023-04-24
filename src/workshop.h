@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <set>
 
 enum class eModuleType
 {
@@ -36,9 +37,13 @@ public:
         return abs(x - other.x) + abs(y - other.y);
     }
 
-    bool operator==(const cxy& other ) const
+    bool operator==(const cxy &other) const
     {
-        return ( x == other.x && y == other.y );
+        return (x == other.x && y == other.y);
+    }
+    bool operator<(const cxy &other) const
+    {
+        return (x < other.x && y < other.y);
     }
     int x;
     int y;
@@ -164,7 +169,6 @@ public:
 
     void calculateLayout();
     std::string text();
-    // void displayAsciiArt();
 
     std::vector<cWorkshop *>::const_iterator
     begin() const
@@ -179,6 +183,7 @@ public:
 
 private:
     std::vector<cWorkshop *> myLayout;
+    std::set<std::pair<int, int>> setEdge;
     int myMaxModules;
 
     void biotech(cxy &location);
@@ -201,15 +206,24 @@ private:
     /// @return pointer to module at location of same type if already exists
     /// @return pointer to new module at location if empty
     /// throws exception if location has module of different type
-    cModule* shareOrConstruct(
+    cModule *shareOrConstruct(
         eModuleType type,
         const cxy &loc);
 
     /// @brief Find module at location
     /// @param loc location
     /// @return module pointer if present, otherwise 0
-    cModule* find( 
-        const cxy &loc ) const;
+    cModule *find(
+        const cxy &loc) const;
+
+    /// @brief Stores unique bidirection edge
+    /// @param s source location
+    /// @param d destination location
+    void insert(const cxy &s, const cxy &d);
+
+    /// @brief Counts unique links
+    /// @return count
+    int linkCount();
 };
 
 class cAsciiArt

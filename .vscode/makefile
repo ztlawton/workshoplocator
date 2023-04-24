@@ -24,6 +24,7 @@ OBJ_workshopLocator = \
 	$(ODIR)/main.o \
 	$(ODIR)/cWorkshop.o \
 	$(ODIR)/cLayout.o \
+	$(ODIR)/cModule.o \
 	$(ODIR)/cAsciiArt.o 
 
 ### COMPILE
