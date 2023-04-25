@@ -674,9 +674,13 @@ int cLayout::linkCount()
                 if (dy < 0)
                     inc = -1;
                 cxy prev(mx, my);
-                for (int y = my + inc; y != wy; y += inc)
-                    insert(prev, cxy(mx, y));
-                insert(prev, cxy(mx, wy));
+                int y = my;
+                do {
+                    y += inc;
+                    cxy next(mx,y);
+                    insert(prev, next);
+                    prev = next;
+                } while( y != wy );
             }
             int dx = wx - mx;
             if (dx)
@@ -685,9 +689,14 @@ int cLayout::linkCount()
                 if (dx < 0)
                     inc = -1;
                 cxy prev(mx, wy);
-                for (int x = mx + inc; x != wx; x += inc)
-                    insert(prev, cxy(x, wy));
-                insert(prev, w->location());
+                int x = mx;
+                do {
+                    x += inc;
+                    cxy next(x,wy);
+                    insert( prev,next);
+                    prev = next;
+                } while( x != wx );
+
             }
         }
     }
