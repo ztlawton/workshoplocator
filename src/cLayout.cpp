@@ -366,10 +366,10 @@ void cLayout::electronics2(cxy &location)
             shared2->move(cxy(w->location().x + 1, w->location().y + 1));
             w->add(shared2);
             mg = new cModule(eModuleType::recycling);
-            mg->move(cxy(w->location().x - 1, w->location().y));
+            mg->move(cxy(w->location().x, w->location().y-1));
             w->add(mg);
             shared3 = new cModule(eModuleType::recycling);
-            shared3->move(cxy(w->location().x + 1, w->location().y));
+            shared3->move(cxy(w->location().x, w->location().y+1));
             w->add(shared3);
             mg = new cModule(eModuleType::radiator);
             mg->move(cxy(w->location().x - 1, w->location().y - 1));
@@ -389,9 +389,12 @@ void cLayout::electronics2(cxy &location)
             shared2->move(cxy(w->location().x + 1, w->location().y + 1));
             w->add(shared2);
             w->add(shared3);
-            shared3 = new cModule(eModuleType::recycling);
-            shared3->move(cxy(w->location().x + 1, w->location().y));
-            w->add(shared3);
+            auto m  = new cModule(eModuleType::recycling);
+            m->move(cxy(w->location().x, w->location().y-1));
+            w->add(m);
+            m  = new cModule(eModuleType::recycling);
+            m->move(cxy(w->location().x, w->location().y+1));
+            w->add(m);
             w->add(shared4);
             shared4 = new cModule(eModuleType::radiator);
             shared4->move(cxy(w->location().x + 1, w->location().y - 1));
