@@ -333,8 +333,6 @@ void cLayout::electronics2(cxy &location)
 {
     location.y = cModule::lastLocation().y + 2;
 
-    cModule *mg, *shared1, *shared2, *shared3, *shared4;
-    bool first = true;
     for (auto *w : myLayout)
     {
         if (w->type() != eWorkShopType::electronics)
@@ -345,61 +343,35 @@ void cLayout::electronics2(cxy &location)
             7 < location.x && location.x < 10)
         {
             location.x = 10;
-            first = true;
+
         }
 
         w->move(location);
 
-        if (first)
-        {
-            first = false;
-            mg = new cModule(eModuleType::stowage);
-            mg->move(cxy(w->location().x - 1, w->location().y + 2));
-            w->add(mg);
-            shared1 = new cModule(eModuleType::stowage);
-            shared1->move(cxy(w->location().x + 1, w->location().y + 2));
-            w->add(shared1);
-            mg = new cModule(eModuleType::solar);
-            mg->move(cxy(w->location().x - 1, w->location().y + 1));
-            w->add(mg);
-            shared2 = new cModule(eModuleType::solar);
-            shared2->move(cxy(w->location().x + 1, w->location().y + 1));
-            w->add(shared2);
-            mg = new cModule(eModuleType::recycling);
-            mg->move(cxy(w->location().x, w->location().y-1));
-            w->add(mg);
-            shared3 = new cModule(eModuleType::recycling);
-            shared3->move(cxy(w->location().x, w->location().y+1));
-            w->add(shared3);
-            mg = new cModule(eModuleType::radiator);
-            mg->move(cxy(w->location().x - 1, w->location().y - 1));
-            w->add(mg);
-            shared4 = new cModule(eModuleType::radiator);
-            shared4->move(cxy(w->location().x + 1, w->location().y - 1));
-            w->add(shared4);
-        }
-        else
-        {
-            w->add(shared1);
-            shared1 = new cModule(eModuleType::stowage);
-            shared1->move(cxy(w->location().x + 1, w->location().y + 2));
-            w->add(shared1);
-            w->add(shared2);
-            shared2 = new cModule(eModuleType::solar);
-            shared2->move(cxy(w->location().x + 1, w->location().y + 1));
-            w->add(shared2);
-            w->add(shared3);
-            auto m  = new cModule(eModuleType::recycling);
-            m->move(cxy(w->location().x, w->location().y-1));
-            w->add(m);
-            m  = new cModule(eModuleType::recycling);
-            m->move(cxy(w->location().x, w->location().y+1));
-            w->add(m);
-            w->add(shared4);
-            shared4 = new cModule(eModuleType::radiator);
-            shared4->move(cxy(w->location().x + 1, w->location().y - 1));
-            w->add(shared4);
-        }
+        w->add(shareOrConstruct(
+            eModuleType::radiator,
+            cxy(w->location().x - 1, w->location().y - 1)));
+        w->add(shareOrConstruct(
+            eModuleType::radiator,
+            cxy(w->location().x + 1, w->location().y - 1)));
+        w->add(shareOrConstruct(
+            eModuleType::recycling,
+            cxy(w->location().x - 1, w->location().y)));
+        w->add(shareOrConstruct(
+            eModuleType::recycling,
+            cxy(w->location().x + 1, w->location().y)));
+        w->add(shareOrConstruct(
+            eModuleType::solar,
+            cxy(w->location().x - 1, w->location().y+1)));
+        w->add(shareOrConstruct(
+            eModuleType::solar,
+            cxy(w->location().x + 1, w->location().y+1)));
+        w->add(shareOrConstruct(
+            eModuleType::stowage,
+            cxy(w->location().x - 1, w->location().y+2)));
+        w->add(shareOrConstruct(
+            eModuleType::stowage,
+            cxy(w->location().x + 1, w->location().y+2)));
 
         w->CalcActualTemp();
 
@@ -408,7 +380,6 @@ void cLayout::electronics2(cxy &location)
         {
             location.x = 2;
             location.y += 3;
-            first = true;
         }
     }
 }
